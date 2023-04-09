@@ -6,21 +6,18 @@
  */
 
 import React from "react";
-import type { PropsWithChildren } from "react";
+import Home from "./screens/Home";
+
 import {
-  Dimensions,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
   View,
 } from "react-native";
 
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-
-const { width } = Dimensions.get("window");
 
 export default function App() {
   const isDarkMode = useColorScheme() === "dark";
@@ -46,6 +43,8 @@ export default function App() {
           }}
         ></View>
       </ScrollView>
+
+      <Home />
     </SafeAreaView>
   );
 }

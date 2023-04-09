@@ -13,15 +13,18 @@ node_modules/
 
 # Android/IntelliJ
 #
-build/
-.gradle
+*.gradle
 local.properties
 
-# Xcode
+# ios/xcode
 #
-build/
-DerivedData
+*.xcuserstate
 
 # OSX
 #
 .DS_Store
+build/
+
+# Logs
+#
+*.log
