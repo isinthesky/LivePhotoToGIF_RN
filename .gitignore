@@ -1,0 +1,27 @@
+# node.js
+#
+node_modules/
+
+# env
+#
+*.env
+
+# Ruby / CocoaPods
+#
+/ios/Pods/
+/vendor/bundle/
+
+# Android/IntelliJ
+#
+build/
+.gradle
+local.properties
+
+# Xcode
+#
+build/
+DerivedData
+
+# OSX
+#
+.DS_Store
