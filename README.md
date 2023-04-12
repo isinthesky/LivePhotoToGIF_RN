@@ -1,1 +1,1 @@
-# LivePhotoToGIF_RN
+# VideoToGIF_RN
