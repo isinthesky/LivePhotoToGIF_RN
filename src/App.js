@@ -14,8 +14,10 @@ import {
   View,
 } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { Provider } from "react-redux";
 
 import Main from "./screens/Main";
+import store from "./store/congifureStore";
 
 export default function App() {
   const isDarkMode = useColorScheme() !== "dark";
@@ -39,7 +41,9 @@ export default function App() {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}
         >
-          <Main />
+          <Provider store={store}>
+            <Main />
+          </Provider>
         </View>
       </ScrollView>
     </SafeAreaView>

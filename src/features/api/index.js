@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   baseURL: SERVER_URL,
 });
 
-export const putVideoFile = async (video) => {
+export const putVideoFile = async (video, option) => {
   if (!video) return;
   try {
     const formData = new FormData();
@@ -13,9 +13,9 @@ export const putVideoFile = async (video) => {
       uri: video.uri,
       type: "multipart/form-data",
       name: video.fileName,
-      width: video.width,
-      height: video.height,
     });
+
+    formData.append("option", JSON.stringify(option));
 
     const res = await axiosInstance.put("/video/", formData, {
       headers: {
