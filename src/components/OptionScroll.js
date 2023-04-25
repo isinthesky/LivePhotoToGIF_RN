@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 80,
     fontSize: 20,
-    lineHeight: 19,
+    lineHeight: 10,
+    marginBottom: 5,
     textAlign: "center",
   },
   pickerText: {

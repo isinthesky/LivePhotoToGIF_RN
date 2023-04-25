@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import {
   updateContent,
-  cancelContent,
+  removeContent,
 } from "../features/reducers/contentSlice";
 import { updateValue } from "../features/reducers/optionSlice";
 import { selectContent } from "../util/contentSelector";
@@ -46,7 +46,7 @@ function Selector() {
         {
           text: "OK",
           onPress: () => {
-            dispatch(cancelContent({ content: "video" }));
+            dispatch(removeContent({ content: "video" }));
           },
           style: "OK",
         },
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    marginTop: 40,
     padding: 10,
     borderTopWidth: 3,
     borderBottomWidth: 3,

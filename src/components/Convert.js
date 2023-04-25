@@ -49,10 +49,10 @@ function Convert() {
 const styles = StyleSheet.create({
   convertContainer: {
     alignItems: "center",
+    alignSelf: "center",
     paddingTop: 20,
     paddingBottom: 20,
     width: "100%",
-    borderBottomWidth: 3,
   },
   disableSendButton: {
     justifyContent: "space-around",
