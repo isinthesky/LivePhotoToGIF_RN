@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import OptionScroll from "../components/OptionScroll";
-import OptionToggle from "../components/OptionToggle";
+import OptionScroll from "./OptionScroll";
+import OptionToggle from "./OptionToggle";
 import { DEFAULT_COLOR } from "../constants/color";
 
 const optionScale = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
@@ -45,8 +45,8 @@ function Options() {
 
 const styles = StyleSheet.create({
   gifOptionsContainer: {
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     width: "100%",
     borderBottomWidth: 3,
     backgroundColor: DEFAULT_COLOR,
