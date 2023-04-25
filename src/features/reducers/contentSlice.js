@@ -15,13 +15,13 @@ export const contentSlice = createSlice({
       const { content, value } = action.payload;
       state.value[content] = value;
     },
-    cancelContent: (state, action) => {
+    removeContent: (state, action) => {
       const { content } = action.payload;
       state.value[content] = null;
     },
   },
 });
 
-export const { updateContent, cancelContent } = contentSlice.actions;
+export const { updateContent, removeContent } = contentSlice.actions;
 
 export default contentSlice.reducer;
