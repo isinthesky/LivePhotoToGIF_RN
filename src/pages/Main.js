@@ -11,7 +11,10 @@ function Main({ navigation }) {
   const { navigate } = navigation;
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.screen}
+      >
         <Selector />
         <GifInfo />
         <Options />
@@ -35,6 +38,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: BACKGROUND_COLOR,
     fontSize: 20,
+    borderBottomWidth: 3,
+  },
+  screen: {
+    marginTop: 40,
   },
 });
 
