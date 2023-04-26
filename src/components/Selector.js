@@ -24,6 +24,8 @@ function Selector() {
   const selectFile = async () => {
     const content = await selectContent();
 
+    dispatch(removeContent({ content: "video" }));
+
     if (content.fileName.lastIndexOf("-") > 0) {
       content.fileName = content.fileName.slice(
         content.fileName.lastIndexOf("-") + 1,
