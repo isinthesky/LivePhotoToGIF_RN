@@ -16,6 +16,8 @@ import { updateValue } from "../features/reducers/optionSlice";
 import { selectContent } from "../util/contentSelector";
 import { DEFAULT_COLOR, SIGNATURE_COLOR } from "../constants/color";
 
+const MAX_VIDEO_DURATION = 15;
+
 function Selector() {
   const dispatch = useDispatch();
 
@@ -24,7 +26,22 @@ function Selector() {
   const selectFile = async () => {
     const content = await selectContent();
 
+    if (!content) return;
+
     dispatch(removeContent({ content: "video" }));
+
+    if (content.duration > MAX_VIDEO_DURATION + 1) {
+      Alert.alert("알림", "GIF 변환을 15초 까지 지원합니다.", [
+        {
+          text: "OK",
+          onPress: () => {
+            dispatch(removeContent({ content: "video" }));
+          },
+          style: "OK",
+        },
+      ]);
+      return;
+    }
 
     if (content.fileName.lastIndexOf("-") > 0) {
       content.fileName = content.fileName.slice(
@@ -100,18 +117,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    padding: 10,
+    paddingVertical: 10,
+    paddingLeft: 10,
     borderTopWidth: 3,
     borderBottomWidth: 3,
     backgroundColor: DEFAULT_COLOR,
   },
   imageInfoContainer: {
     flexDirection: "column",
-    justifyContent: "space-around",
-    paddingTop: 5,
-    paddingBottom: 5,
-    minWidth: 150,
-    width: "100%",
+    justifyContent: "flex-start",
+    paddingVertical: 5,
+    paddingLeft: 10,
+    minWidth: 180,
+    width: "85%",
   },
   title: {
     fontSize: 20,

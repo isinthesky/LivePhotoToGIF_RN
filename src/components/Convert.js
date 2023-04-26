@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { updateContent } from "../features/reducers/contentSlice";
@@ -6,8 +6,10 @@ import { updateContent } from "../features/reducers/contentSlice";
 import { putVideoFile } from "../features/api";
 import { BACKGROUND_COLOR, SIGNATURE_COLOR } from "../constants/color";
 import { useNavigation } from "@react-navigation/native";
+import Spinner from "react-native-loading-spinner-overlay";
 
 function Convert() {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const content = useSelector((state) => state.contentReducer.value);
@@ -16,7 +18,11 @@ function Convert() {
   const sendVideoFile = async () => {
     if (!content.video) return;
 
+    setLoading(true);
+
     const res = await putVideoFile(content.video, option);
+
+    setLoading(false);
 
     if (!res.data) return;
 
@@ -41,6 +47,14 @@ function Convert() {
         >
           <Text style={styles.buttonText}>Convert</Text>
         </View>
+        <Spinner
+          visible={loading}
+          size="large"
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          animation="fade"
+          textContent={"Loading..."}
+          textStyle={styles.spinnerTextStyle}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -73,6 +87,9 @@ const styles = StyleSheet.create({
     backgroundColor: SIGNATURE_COLOR,
   },
   buttonText: { fontSize: 24, width: 220, textAlign: "center" },
+  spinnerTextStyle: {
+    color: SIGNATURE_COLOR,
+  },
 });
 
 export default Convert;
