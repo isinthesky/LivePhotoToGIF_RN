@@ -62,7 +62,11 @@ function GifInfo() {
         />
       ) : (
         <View style={styles.LogoBox}>
-          <Text style={styles.Logo}>GIF Maker</Text>
+          <Text style={styles.Logo1}>
+            Video{"     "}
+            {"\n"}
+            {"     "} to GIF
+          </Text>
         </View>
       )}
     </View>
@@ -93,8 +97,14 @@ const styles = StyleSheet.create({
     height: 130,
     backgroundColor: SIGNATURE_COLOR,
   },
-  Logo: {
-    textAlign: "center",
+  Logo1: {
+    textAlign: "left",
+    color: "white",
+    fontSize: 36,
+    fontWeight: 600,
+  },
+  Logo2: {
+    textAlign: "right",
     color: "white",
     fontSize: 36,
     fontWeight: 600,
