@@ -78,6 +78,9 @@ ffmpeg -i {inputPath.mp4} -vf scale={width:height} -r {fps} -pix_fmt {bgr8} -y {
 
 대부분의 `GIF file`의 세부내용, image data structure등을 wikipedia(https://en.wikipedia.org/wiki/GIF)에서 얻을 수 있었습니다.<br>
 
+<img width="540" alt="스크린샷 2023-05-25 오후 9 56 07" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/cf5ef29b-d337-4c85-bf05-0328b8fb3d6e">
+출처: https://www.fileformat.info/format/gif/egff.htm
+
 ### a. GIF에 어떤 image format을 삽입 해야 할까??
 
 최대 `8bit bitmap`이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 `bgr8`를 적용하여 bitmap 파일을 얻었습니다.
