@@ -117,7 +117,7 @@ gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color tab
 
 ### c. file data 구조 쌓기, image frame 삽입
 
-![gif data structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/627a1bae-abc0-42ba-be2b-8a3ad68f7784)
+![gif file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
 
 gif file의 기본적인 header 설정 후 bmp data를 반복 삽입 가능하게 했습니다.<br>
 bmp 이미지 데이터에 대한 `LZW 압축 알고리즘`을 적용했습니다.
