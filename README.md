@@ -47,7 +47,6 @@ livephotoTogif_rn.gif
 # 💭 Motivation
 
 영상에 관심이 많은 저는 비디오을 다루는 프로젝트 아이디어를 고심했습니다.<br>
-조사하면 할수록 코덱, 알고리즘 등 바닥부터 쌓아올리기엔 무리가있고 라이브러리에 의존할 수 밖에 없다 생각했습니다.<br>
 비디오에서 bmp, gif로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
 gif의 낮은 화질이 주는 옛감성을 쉽고 재미있게 느껴보고 싶었습니다.
 
@@ -62,6 +61,8 @@ gif의 낮은 화질이 주는 옛감성을 쉽고 재미있게 느껴보고 싶
 ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 video에서 이미지 추출이 가능하다는 문서를 찾았습니다.<br>
 OpenCV도 ffmpeg을 사용한다는 글을 보았고 거의 `모든 미디어의 인코딩 디코딩을 지원하고 보편적으로 쓰이는` `ffmpeg 라이브러리`를 사용하게 되었습니다.
 
+`챌린지가 아니고 사용방법이다. 개발 하면서 시행착오, 최종선택 원인, 과정`
+
 ### b. ffmpeg
 
 ffmpeg의 사용법, options <br>
@@ -74,20 +75,31 @@ ffmpeg의 사용법, options <br>
 ffmpeg -i {inputPath.mp4} -vf scale={width:height} -r {fps} -pix_fmt {bgr8} -y {outputPath.bmp}
 ```
 
+<br>
+
 ## 2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?
 
-대부분의 `GIF file`의 세부내용, image data structure등을 wikipedia(https://en.wikipedia.org/wiki/GIF)에서 얻을 수 있었습니다.<br>
+`gif image data structure 예시 @이미지@`
+
+대부분의 `GIF file`의 `세부내용????` , image data structure등을 wikipedia(https://en.wikipedia.org/wiki/GIF)에서 얻을 수 있었습니다.<br>
 
 ### a. GIF에 어떤 image format을 삽입 해야 할까??
 
-최대 `8bit bitmap`이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 `bgr8`를 적용하여 bitmap 파일을 얻었습니다.
+최대 `8bit bitmap`이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 `bgr8`를 적용하여 bitmap 파일을 얻었습니다. `bitmap file을 얻는 과정`,
 
 ### b. 8bit bitmap의 데이터 구조(header - color table - image data)
+
+`bitmap 8bit data 구조 @이미지@`
+`rgb, bgr 뒤집힌 이유 현상 변환과정`
+`color table, image`
 
 `Bitmap` 의 `pixel data`배열은 `bgr Type`으로 뒤집혀 있어 데이터를 뒤집어 주었습니다.
 gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color table`과 `image data`를 얻었습니다.
 
 ### c. file data 구조 쌓기, image frame 삽입
+
+`gif file image header 설명`
+`LZW 알고리즘 설명 왜 이거를 쓰는지`
 
 gif file의 기본적인 header 설정 후 bmp data를 반복 삽입 가능하게 했습니다.<br>
 bmp 이미지 데이터에 대한 `LZW 압축 알고리즘`을 적용했습니다.
@@ -99,6 +111,12 @@ scale - 메모리 저장, 이미지 처리 효율 특성으로 width는 4배수�
 delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간으로 1/100초 단위로 세팅 됩니다.<br>gif 생성 옵션의 delay = (time / fps) \* (time / speed)
 
 flip/mirror - ffmpeg에서 bitmap file을 추출하는 과정에서 flip/mirror 옵션을 추가하여 옵션을 적용한 이미지를 얻을 수 있게 했습니다.
+
+<br>
+
+## 3. react native cli
+
+사용자의 간편한 사용성을 우선으로 ui를 구성하였습니다.
 
 <br>
 
