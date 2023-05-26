@@ -114,7 +114,7 @@ ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 
 ### b. 8bit bitmap의 데이터 구조
 
-<img width="406" alt="스크린샷 2023-05-25 오후 10 13 05" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/5ea36e41-ecb3-4142-a36d-aa1dce788e45">
+![8bit bitmap structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/5f7bfd55-f57d-4ae3-85c7-1c8d5e2e3a1c)
 
 `Bitmap` 의 `pixel data`배열은 `bgr Type`으로 뒤집혀 있어 데이터를 뒤집어 주었습니다.
 (bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
@@ -124,7 +124,7 @@ gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color tab
 
 ### c. file data 구조 쌓기, image frame 삽입
 
-<img width="359" alt="스크린샷 2023-05-25 오후 10 38 52" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/115aae8b-e316-4d6c-900b-31bd44468988">
+![gif file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
 
 gif file의 기본적인 header 설정 후 bmp data를 반복 삽입 가능하게 했습니다.<br>
 bmp 이미지 데이터에 대한 `LZW 압축 알고리즘`을 적용했습니다.
