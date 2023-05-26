@@ -96,7 +96,8 @@ return new Promise(
 
 GIF, Bitmap file 관련 정보는 wikipedia(https://en.wikipedia.org/wiki/GIF)에서 대부분 얻을 수 있었습니다.<br>
 
-// gif 개요 설명 + 이미지 //
+![gif_file_stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)
+
 
 ### a. GIF에 어떤 image format을 삽입 해야 할까?
 
