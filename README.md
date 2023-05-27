@@ -8,10 +8,10 @@
 
 # Table of Contents
 
-- [🔍 Preview](#-🔍-preview)
-- [💭 Motivation](#-💭-motivation)
-- [💻 Features](#-💻-features)
-- [💪 Challenges](#-💪-challenges)
+- [Preview](#-preview)
+- [Motivation](#-motivation)
+- [Features](#-features)
+- [Challenges](#-challenges)
   - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](##1-비디오에서-이미지-추출은-어떻게-해야할까?)
     - [a. ffmpeg vs OpenCV](###a-ffmpeg-vs-OpenCV)
     - [b. ffmpeg 사용방법](###b-ffmpeg-사용방법)
@@ -21,23 +21,21 @@
     - [c. file data 구조 쌓기, image frame 삽입](###c-file-data-구조-쌓기,-image-frame-삽입)
     - [d. gif option 적용](###d-gif-option-적용)
   - [3. React navtive cli?](##3-React-navtive-cli?)
-- [📅 Timeline](#-📅-timeline)
-- [🎥 Video](#-🎥-video)
-- [⚙️ Tech stack](#-⚙️-tech-stack)
-- [🔗 Repository Link](#-🔗-repository-link)
-- [📝 Memoir](#-📝-memoir)
-
-// 세부 목차 //
+- [Timeline](#-timeline)
+- [Video](#-video)
+- [Tech stack](#-tech-stack)
+- [Repository Link](#-repository-link)
+- [Memoir](#-memoir)
 
 <br>
 
-# 🔍 Preview
+# Preview
 
 livephotoTogif_rn.gif
 
 <br>
 
-# 💭 Motivation
+# Motivation
 
 영상에 관심이 많은 저는 비디오을 다루는 프로젝트 아이디어를 고심했습니다.<br>
 비디오에서 bmp, gif로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
@@ -46,7 +44,7 @@ gif의 낮은 화질이 주는 옛감성을 쉽고 재미있게 느낄 수 있�
 
 <br>
 
-# 💪 Challenges
+# Challenges
 
 ## 1. 비디오에서 이미지 추출은 어떻게 해야할까?
 
@@ -156,7 +154,7 @@ delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간
 
 <br>
 
-# 📅 Timeline
+# Timeline
 
 ### 프로젝트 기간: 2023.04.03(월) ~ 2023.04.28(금)
 
@@ -172,7 +170,7 @@ https://youtu.be/5NZXGDLRR6s
 
 <br>
 
-# ⚙️ Tech stack
+# Tech stack
 
 ### Frontend
 
@@ -189,7 +187,7 @@ https://youtu.be/5NZXGDLRR6s
 
 <br>
 
-# 🔗 Repository Link
+# Repository Link
 
 [LivePhotoToGIF_RN](https://github.com/isinthesky/LivePhotoToGIF_RN)
 
@@ -197,7 +195,7 @@ https://youtu.be/5NZXGDLRR6s
 
 <br>
 
-# 📝 Memoir
+# Memoir
 
 ffmpeg을 통해 얻은 bitmap 파일만으로 gif 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만 wikipedia의 image foramt 문서를 통해 bitmap file과 gif file의 구조를 이해하고 gif header data를 구성하고 image frame을 삽입하고 옵션을 적용하는 gif file 생성 과정은 쉽지 않았습니다.
 
