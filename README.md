@@ -164,7 +164,7 @@ delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간
 
 <br>
 
-# 🎥 Video
+# Video
 
 https://youtu.be/5NZXGDLRR6s
 
