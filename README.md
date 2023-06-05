@@ -113,8 +113,7 @@ ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 <br>
 
 ### b. 8bit bitmap의 데이터 구조
-
-![8bit bitmap structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/5f7bfd55-f57d-4ae3-85c7-1c8d5e2e3a1c)
+<img width="288" alt="스크린샷 2023-06-05 오후 10 26 23" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/2d3a1920-d513-4f87-b24a-aefe03723768">
 
 (bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
 
