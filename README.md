@@ -31,7 +31,10 @@
 
 # Preview
 
-livephotoTogif_rn.gif
+| 구분 | 기본 화면          | 영상 등록 화면    |  변환 완료 화면   |
+| ---- | --------------- | ---------------- | ---------------- |
+| 활용 | ![IMG_2298](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/f7c0bfb3-95b8-4896-a139-9a06361b1aa3) | ![IMG_2299](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/8701ab42-83c2-4576-b164-19044ac4af5d) | ![IMG_2300](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/05420e69-ad66-46ea-8058-4f89f9b9e7c2) |
+
 
 <br>
 
