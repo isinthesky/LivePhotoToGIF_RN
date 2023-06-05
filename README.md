@@ -10,7 +10,6 @@
 
 - [Preview](#-preview)
 - [Motivation](#-motivation)
-- [Features](#-features)
 - [Challenges](#-challenges)
   - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](##1-비디오에서-이미지-추출은-어떻게-해야할까?)
     - [a. ffmpeg vs OpenCV](###a-ffmpeg-vs-OpenCV)
@@ -31,20 +30,20 @@
 
 # Preview
 
-| 구분 | 기본 화면          | 영상 등록 화면    |  변환 완료 화면   |
-| ---- | --------------- | ---------------- | ---------------- |
-| 활용 | ![IMG_2298](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/f7c0bfb3-95b8-4896-a139-9a06361b1aa3) | ![IMG_2299](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/8701ab42-83c2-4576-b164-19044ac4af5d) | ![IMG_2300](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/05420e69-ad66-46ea-8058-4f89f9b9e7c2) |
-
+| 기본 화면                                                                                                         | 영상 등록 화면                                                                                                    | 변환 완료 화면                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ![IMG_2298](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/f7c0bfb3-95b8-4896-a139-9a06361b1aa3) | ![IMG_2299](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/8701ab42-83c2-4576-b164-19044ac4af5d) | ![IMG_2300](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/05420e69-ad66-46ea-8058-4f89f9b9e7c2) |
 
 <br>
 
 # Motivation
 
-영상에 관심이 많은 저는 비디오을 다루는 프로젝트 아이디어를 고심했습니다.<br>
+영상에 관심이 많은 저는 미디어를 다루는 프로젝트 아이디어를 고심했습니다.<br>
+미디어를 다루는 라이브러리를 사용하기보다는 컨텐츠의 데이터에 접근해보고 싶었습니다.<br>
 비디오에서 bmp, gif로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
 gif의 낮은 화질이 주는 옛감성을 쉽고 재미있게 느낄 수 있게 의도하였습니다.<br>
 또한 개발을 접하고 처음 React native를 통해 모바일 환경에 도전하여 새로운 환경을 이해해 보고 싶었습니다.
-
+<br>
 <br>
 
 # Challenges
@@ -100,7 +99,7 @@ return new Promise(
 간략한 GIF 파일의 구조와 데이터 흐름은, 앞쪽 GIF의 Image Header 부분과 반복되는 Image Frame 부분으로 볼 수 있겠습니다.
 <br>
 
-### a. GIF에 어떤 Image를 넣을 수 있을까?
+### a. GIF에 어떤 image format을 삽입 해야 할까?
 
 <img width="540" alt="스크린샷 2023-05-25 오후 9 56 07" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/cf5ef29b-d337-4c85-bf05-0328b8fb3d6e"><br>
 (출처: https://www.fileformat.info/format/gif/egff.htm)
@@ -153,7 +152,7 @@ delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간
 
 ## 3. React navtive cli?
 
-일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다. 앱 환경에 처음 도전이지만 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. 긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. 따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 모든 환경에 대한 경험을 해보고자 프로젝트를 기획하게 되었습니다.
+일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다. 앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. 긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. 따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 모든 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
 
 <br>
 
@@ -177,7 +176,7 @@ https://youtu.be/5NZXGDLRR6s
 
 ### Frontend
 
-- React native (cli)
+- React native (CLI)
 - react-redux
 - ESLint
 
