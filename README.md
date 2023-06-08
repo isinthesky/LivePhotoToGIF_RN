@@ -8,27 +8,30 @@
 
 # Table of Contents
 
-- [Preview](#-preview)
-- [Motivation](#-motivation)
-- [Challenges](#-challenges)
-  - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](#1-비디오에서-이미지-추출은-어떻게-해야할까?)
+- [Preview](#preview)
+- [Motivation](#motivation)
+- [Challenges](#challenges)
+  - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](#1-비디오에서-이미지-추출은-어떻게-해야할까)
     - [a. ffmpeg vs OpenCV](#a-ffmpeg-vs-opencv)
-    - [b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?](#b-외부파일을-node환경에서-어떻게-실행할-수-있을까?)
-  - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까?)
-    - [a. GIF에 어떤 image format을 삽입 해야 할까?](#a-gif에-어떤-image-format을-삽입-해야-할까?)
+    - [b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?](#b-외부파일을-node환경에서-어떻게-실행할-수-있을까)
+  - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까)
+    - [a. GIF에 어떤 image format을 삽입 해야 할까?](#a-gif에-어떤-image-format을-삽입-해야-할까)
     - [b. 8bit bitmap의 데이터 구조](#b-8bit-bitmap의-데이터-구조)
     - [c. GIF File 구조, Image frame 삽입](#c-gif-file-구조,-image-frame-삽입)
-    - [d. LZW 압축이란?](#d-lzw-압축이란?)
+    - [d. LZW 압축이란?](#d-lzw-압축이란)
     - [e. gif option 적용](#e-gif-option-적용)
-  - [3. React navtive cli?](#3-react-navtive-cli?)
+  - [3. 문제: 너무나 많은걸 할 수 있는 ffmpeg](#3-문제-너무나-많은걸-할-수-있는-ffmpeg)
+    - [a. Video의 Raw data는 bitmap이 아니다.](#a-video의-raw-data는-bitmap이-아니다)
+    - [b. 효율과 과정사이](#b-효율과-과정사이)
+  - [4. React navtive CLI?](#4-react-navtive-cli)
     - [a. 심플하지만 다있는 UI](#a-심플하지만-다있는-ui)
     - [b. Navigation으로 모션 화면전환](#b-navigation으로-모션-화면전환)
     - [c. video file 전송](#c-video-file-전송)
-- [Timeline](#-timeline)
-- [Video](#-video)
-- [Tech stack](#-tech-stack)
-- [Repository Link](#-repository-link)
-- [Memoir](#-memoir)
+- [Timeline](#timeline)
+- [Video](#video)
+- [Tech stack](#tech-stack)
+- [Repository Link](#repository-link)
+- [Memoir](#memoir)
 
 <br>
 
@@ -112,7 +115,6 @@ return new Promise(
 
 <br>
 </p>
-
 <p>
 
 ## 2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?
@@ -253,7 +255,36 @@ buf[position++] = 0; // Block Terminator.
 
 <p>
 
-## 3. React navtive cli?
+## 3. 문제: 너무나 많은걸 할 수 있는 ffmpeg
+
+### a. Video의 Raw data는 bitmap이 아니다.
+
+- [YUView](https://github.com/IENT/YUView)
+
+ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
+추출한 yuv 파일을 `yuv viewer`앱을 통해서 정상 이미지를 확인한 후에 Bitmap 파일로 변환 하려고 하는 과정에서 옳은 방향인가에 대해서 고민하게 되었습니다.<br>
+
+<br>
+
+</p>
+<p>
+
+### b. 효율과 과정사이
+
+**h.264 -> yuv -> bitmap -> gif**로 이어지는 일련의 과정을 도전해 보고싶은 마음도 있었지만<br>
+목표인 GIF file을 빠르게 생성하는 것도 도전과제중 하나였기 때문에 vdeo file에서 Bitmap Image로 곧바로 추출 하게 되었습니다.<br>
+또한 포맷 변경과정에서의 예상보다 훨씬 많은 메모리를 사용하는 것도 과정을 줄이게 되는 이유중에 하나 이기도 했습니다.<br>
+
+조금 나중에 알게되었지만 ffmpeg을 사용하면 video format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
+하지만 GIF File 구조를 직접 생성하는 과정에서 Frame Delay와 같은 개별적인 option 설정할 수 있기 때문에 장점도 있었습니다.
+
+<br>
+
+</p>
+
+<p>
+
+## 4. React navtive CLI?
 
 일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다.<br>
 앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. <br>Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. <br>긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. <br>따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
@@ -410,14 +441,11 @@ https://youtu.be/5NZXGDLRR6s
 
 # Memoir
 
-ffmpeg을 통해 얻은 bitmap 파일만으로 gif 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만 wikipedia의 image foramt 문서를 통해 bitmap file과 gif file의 구조를 이해하고 gif header data를 구성하고 image frame을 삽입하고 옵션을 적용하는 gif file 생성 과정은 쉽지 않았습니다.
+ffmpeg을 통해 얻은 bitmap file을 사용하여 gif 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
+wikipedia의 image foramt 문서를 통해 bitmap file과 gif file의 구조를 이해하고 gif header data를 구성하고 frame image에 옵션을 설정하고 image data를 압축한 후에 gif 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
 
-어찌보면 메인 도전이였던 gif file 생성은 gif file format 이라는 정답이 있기 때문에 도전하는 과정은 잘못된 접근일 뿐 gif파일을 생성하며 고생했던 헤프닝을 문서에 녹이기 어려워 아쉬웠습니다.
+어찌보면 메인 도전이였던 GIF File 생성은 standard format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
 
-그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 앱을 만들어 server와 데이터를 주고 받으며 모바일에서 생성된 gif가 실행 됐을 때 매우 만족스러웠습니다.
+그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 모바일 앱에서 server와 데이터를 주고 받으며 생성된 gif가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
 
-이제는 낮은 화질과 압출 효율로 인한 파일크기등 gif를 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 가장 재미있는 미디어 형식이지 않을까 생각합니다. 화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
-
-```
-
-```
+이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다. 화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
