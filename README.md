@@ -20,9 +20,9 @@
     - [c. GIF File 구조, Image frame 삽입](#c-gif-file-구조,-image-frame-삽입)
     - [d. LZW 압축이란?](#d-lzw-압축이란)
     - [e. gif option 적용](#e-gif-option-적용)
-  - [3. 문제: 너무나 많은걸 할 수 있는 ffmpeg](#3-문제-너무나-많은걸-할-수-있는-ffmpeg)
-    - [a. Video의 Raw data는 bitmap이 아니다.](#a-video의-raw-data는-bitmap이-아니다)
-    - [b. 효율과 과정사이](#b-효율과-과정사이)
+  - [3. 너무나 많은걸 할 수 있는 ffmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
+    - [a. 문제: Video의 Raw data는 bitmap이 아니다.](#a-문제-video의-raw-data는-bitmap이-아니다)
+    - [b. 구현방향 수정: 효율과 과정사이](#b-구현방향-수정-효율과-과정사이)
   - [4. React navtive CLI?](#4-react-navtive-cli)
     - [a. 심플하지만 다있는 UI](#a-심플하지만-다있는-ui)
     - [b. Navigation으로 모션 화면전환](#b-navigation으로-모션-화면전환)
@@ -255,24 +255,25 @@ buf[position++] = 0; // Block Terminator.
 
 <p>
 
-## 3. 문제: 너무나 많은걸 할 수 있는 ffmpeg
+## 3. 너무나 많은걸 할 수 있는 ffmpeg
 
-### a. Video의 Raw data는 bitmap이 아니다.
+### a. 문제: Video의 Raw data는 bitmap이 아니다.
 
 - [YUView](https://github.com/IENT/YUView)
 
 ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
 추출한 yuv 파일을 `yuv viewer`앱을 통해서 정상 이미지를 확인한 후에 Bitmap 파일로 변환 하려고 하는 과정에서 옳은 방향인가에 대해서 고민하게 되었습니다.<br>
+예상을 벗어나는 raw data file의 엄청난 크기로 인해 다른 문제를 일으킬 가능성도 있어보였습니다.
 
 <br>
 
 </p>
 <p>
 
-### b. 효율과 과정사이
+### b. 구현방향 수정: 효율과 과정사이
 
 **h.264 -> yuv -> bitmap -> gif**로 이어지는 일련의 과정을 도전해 보고싶은 마음도 있었지만<br>
-목표인 GIF file을 빠르게 생성하는 것도 도전과제중 하나였기 때문에 vdeo file에서 Bitmap Image로 곧바로 추출 하게 되었습니다.<br>
+목표인 GIF file을 빠르게 생성하는 것도 도전 과제중 하나였기 때문에 vdeo file에서 Bitmap Image로 곧바로 추출 하게 되었습니다.<br>
 또한 포맷 변경과정에서의 예상보다 훨씬 많은 메모리를 사용하는 것도 과정을 줄이게 되는 이유중에 하나 이기도 했습니다.<br>
 
 조금 나중에 알게되었지만 ffmpeg을 사용하면 video format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
