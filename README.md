@@ -21,6 +21,9 @@
     - [d. LZW 압축이란?](###d-LZW-압축이란?)
     - [e. gif option 적용](###e-gif-option-적용)
   - [3. React navtive cli?](##3-React-navtive-cli?)
+    - [a. 심플하지만 다있는 UI](###a-심플하지만-다있는-UI)
+    - [b. Navigation으로 모션 화면전환](###b-Navigation으로-모션-화면전환)
+    - [c. video file 전송](###c-video-file-전송)
 - [Timeline](#-timeline)
 - [Video](#-video)
 - [Tech stack](#-tech-stack)
@@ -82,7 +85,7 @@ node의 `child_process` 모듈은 popen과 유사하지만 동일하지는 않�
 `child_process.spawn()` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**됩니다.<br>
 따라서 `execFile({ffmpeg path}, [ffmpeg options]);` 실행 후 결과 `Callback`을 `Promise`로 감싸 코드의 흐름을 제어했습니다.
 
-`child_process.spawn(command[, args][, options])` 메서드의 **args : List of string arguments.**를 활용하여 ffmepg의 다양한 option 명령을 활용할 수 있었습니다.
+`child_process.spawn(command[, args][, options])` 메서드의 **args : List of string arguments**를 활용하여 ffmepg의 다양한 option 명령을 활용할 수 있었습니다.
 
 ```
 const execFile = require("child_process").spawn;
@@ -110,6 +113,7 @@ return new Promise(
 </p>
 
 <p>
+
 ## 2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?
 
 ![gif_file_stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
@@ -125,7 +129,7 @@ return new Promise(
 <img width="420" alt="스크린샷 2023-05-25 오후 9 56 07" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/cf5ef29b-d337-4c85-bf05-0328b8fb3d6e"><br>
 (출처: https://www.fileformat.info/format/gif/egff.htm)
 
-최대 **8bit bitmap** 이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 8bit bitmap 추출 옵션인 `bgr8`를 적용하여 bitmap 파일을 얻었습니다.
+최대 **8Bit Bitmap** 이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다..
 
 ```
 ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
@@ -153,12 +157,13 @@ gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color tab
 
 ![gif file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
 
-개념적으로 GIF 파일은 0개 이상의 '이미지'로 채워진 고정된 크기의 그래픽 영역('논리적 화면')을 나타냅니다.<br>
-대부분의 GIF 파일에는 전체 논리적 화면을 채우는 단일 이미지가 있습니다. 다른 파일은 논리 화면을 별도의 하위 이미지로 나눕니다.<br>이미지가 애니메이션 GIF 파일에서 애니메이션 프레임으로 기능할 수도 있지만, 이 경우에도 전체 논리적 화면을 채울 필요는 없습니다.
+GIF 파일은 0개 이상의 '이미지'로 채워진 고정된 크기의 그래픽 영역('논리적 화면')을 나타냅니다.<br>
+GIF 파일에는 전체 논리적 화면을 채우는 단일 이미지가 있습니다. 다른 파일은 논리 화면을 별도의 하위 이미지로 나눕니다.
 
-GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 시작하고, 그 뒤에 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자가 이어집니다.<br> 화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 이 테이블이 있는 경우 다음에 이어집니다.
+GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 시작하고, 그 뒤에 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자가 이어집니다.<br> 화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 이 테이블이 있는 경우 다음에 이어집니다.<br>
+저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략하였습니다.
 
-GIF 파일은 image frame data에 **LZW 압축 알고리즘**이 적용되어 있습니다.
+GIF 파일은 Image frame data에 **LZW 압축 알고리즘**이 적용되어 있습니다.
 
 GIF 파일의 Image frame을 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 Color Table 과 Image Data입니다.
 Color Table Data는 그대로 데이터를 삽입하지만 이미지 데이터는 LZW 데이터 압축을 적용해 준 후에 삽입해야합니다.
@@ -249,13 +254,120 @@ buf[position++] = 0;     // Block Terminator.
 
 ## 3. React navtive cli?
 
-일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다. 앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. 긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. 따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 모든 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
+일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다. 앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. 긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. 따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
+
 <br>
 
 </p>
-## 4.
+<p>
+
+### a. 심플하지만 다있는 UI
+
+쉽고 간단하게 GIF로 변환 하고 빨리 결과를 볼 수 있는 어플을 의도하고 제작하면서도 필수 기본적인 정보들(video infomation, preview, file size)을 담기위해 노력했습니다.
+
+react native vlc media player를 활용하여 모바일에 저장된 Video file을 재생하였고 무한반복 기능을 설정하여 GIF로 변경되었을 때의 느낌을 미리 느껴볼 수 있도록 했습니다.
+
+기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 리덕스에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.**
+
+```
+{content.video ? (
+    <VLCPlayer
+      style={styles.player}
+      videoAspectRatio="16:10"
+      autoplay={true}
+      autoReloadLive={true}
+      source={{
+        uri: content.video ? content.video.uri : "",
+        isNetwork: false,
+        isAsset: true,
+        autoplay: true,
+      }}
+    />
+  ) : (
+    <View style={styles.LogoBox}>
+      <Text style={styles.Logo1}>
+        Video{"     "}
+        {"\n"}
+        {"     "} to GIF
+      </Text>
+    </View>
+  )}
+```
 
 <br>
+
+</p>
+
+<p>
+
+### b. Navigation으로 모션 화면전환
+
+페이지가 2개(옵션설정 메인창, 결과창) 인 모바일 어플리케이션이지만 버튼 만으로 페이지를 이동하고 싶지 않았습니다.<br>
+`NativeStackNavigator`를 활용하여 메인창과 결과창을 이동가능하게 구성하였고, 측면의 넘기는 모션을 활용하여 화면 전환도 가능하게 하였습니다.
+
+```
+<NavigationContainer>
+  <Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
+    <Screen name="Main" component={Main} />
+    <Screen name="Viewer" component={Viewer} />
+  </Navigator>
+</NavigationContainer>
+```
+
+<br>
+
+</p>
+
+<p>
+
+### c. file 전송
+
+Video File을 서버로 전송하기위해 FormData형식을 활용하였습니다. <br>
+처음엔 GIF의 옵션 정보를 보내기위해 두번 전송하는 구성을 했었는데 여러번의 시도와 수정 후에 FileData와 옵션 정보들을 함께 보낼 수 있었습니다.
+
+```
+
+// Client
+const formData = new FormData();
+formData.append("file", {
+  uri: video.uri,
+  type: "multipart/form-data",
+  name: video.fileName,
+});
+
+formData.append("option", JSON.stringify(option));
+
+const res = await axiosInstance.put("/video/", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
+```
+
+nodejs express Server에서는 multer를 활용하여 File Data 전달 받았습니다.
+body내 option 객체로 GIF 옵션 정보도 함께 전달 받았습니다.
+
+```
+
+// Server
+router.put("/", multer.single("file"),function (req, res, next) {
+    const options = JSON.parse(req.body.option);
+})
+
+```
+
+잘못된 데이터 전송으로 인한 server의 안전을 위해 multer 생성시점에 파일 사이즈의 **100MB**제한을 두었습니다.
+
+```
+
+multer({ storage, limits: { fileSize: 100000000 } });
+
+```
+
+<br>
+
+</p>
 
 # Timeline
 
@@ -307,3 +419,7 @@ ffmpeg을 통해 얻은 bitmap 파일만으로 gif 파일을 생성하는 작업
 그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 앱을 만들어 server와 데이터를 주고 받으며 모바일에서 생성된 gif가 실행 됐을 때 매우 만족스러웠습니다.
 
 이제는 낮은 화질과 압출 효율로 인한 파일크기등 gif를 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 가장 재미있는 미디어 형식이지 않을까 생각합니다. 화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
+
+```
+
+```
