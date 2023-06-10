@@ -122,8 +122,8 @@ return new Promise(
 ![gif_file_stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
 
 간략한 GIF 파일의 구조와 데이터 흐름은, 앞쪽 GIF의 Image Header 부분과 반복되는 Image Frame 부분으로 볼 수 있겠습니다.
-<br>
 
+<br>
 </p>
 <p>
 
@@ -140,7 +140,6 @@ ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 
 <br>
 </p>
-
 <p>
 
 ### b. 8bit bitmap의 데이터 구조
@@ -153,7 +152,6 @@ gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color tab
 
 <br>
 </p>
-
 <p>
 
 ### c. GIF File 구조, Image frame 삽입
@@ -172,7 +170,6 @@ GIF 파일의 Image frame을 구성하기위해 Bitmap File에서 사용하는 �
 Color Table Data는 그대로 데이터를 삽입하지만 이미지 데이터는 LZW 데이터 압축을 적용해 준 후에 삽입해야합니다.
 
 <br>
-
 </p>
 <p>
 
@@ -216,7 +213,6 @@ P를 첫 번째 문자, C를 다음 문자로 선언하고 테이블에서 P + C
 P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자열의 끝까지 진행하여 테이블을 만들고 압축을 하게됩니다.<br>
 
 <br>
-
 </p>
 <p>
 
@@ -252,7 +248,6 @@ buf[position++] = 0; // Block Terminator.
 
 <br>
 </p>
-
 <p>
 
 ## 3. 너무나 많은걸 할 수 있는 ffmpeg
@@ -266,23 +261,20 @@ ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 
 예상을 벗어나는 raw data file의 엄청난 크기로 인해 다른 문제를 일으킬 가능성도 있어보였습니다.
 
 <br>
-
 </p>
 <p>
 
 ### b. 구현방향 수정: 효율과 과정사이
 
 **h.264 -> yuv -> bitmap -> gif**로 이어지는 일련의 과정을 도전해 보고싶은 마음도 있었지만<br>
-목표인 GIF file을 빠르게 생성하는 것도 도전 과제중 하나였기 때문에 vdeo file에서 Bitmap Image로 곧바로 추출 하게 되었습니다.<br>
+목표인 GIF File을 빠르게 생성하는 것도 앱의 지향점이기 때문에 Video File에서 Bitmap Image를 추출하는 것으로 방향을 수정 했습니다.<br>
 또한 포맷 변경과정에서의 예상보다 훨씬 많은 메모리를 사용하는 것도 과정을 줄이게 되는 이유중에 하나 이기도 했습니다.<br>
 
 조금 나중에 알게되었지만 ffmpeg을 사용하면 video format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
 하지만 GIF File 구조를 직접 생성하는 과정에서 Frame Delay와 같은 개별적인 option 설정할 수 있기 때문에 장점도 있었습니다.
 
 <br>
-
 </p>
-
 <p>
 
 ## 4. React navtive CLI?
@@ -291,7 +283,6 @@ ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 
 앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. <br>Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. <br>긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. <br>따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
 
 <br>
-
 </p>
 <p>
 
@@ -329,9 +320,7 @@ content.video ? (
 ```
 
 <br>
-
 </p>
-
 <p>
 
 ### b. Navigation으로 모션 화면전환
@@ -349,9 +338,7 @@ content.video ? (
 ```
 
 <br>
-
 </p>
-
 <p>
 
 ### c. file 전송
@@ -396,7 +383,6 @@ multer({ storage, limits: { fileSize: 100000000 } });
 ```
 
 <br>
-
 </p>
 
 # Timeline
@@ -449,4 +435,4 @@ wikipedia의 image foramt 문서를 통해 bitmap file과 gif file의 구조를 
 
 그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 모바일 앱에서 server와 데이터를 주고 받으며 생성된 gif가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
 
-이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다. 화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
+이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다.<br>화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
