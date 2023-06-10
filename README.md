@@ -422,9 +422,9 @@ https://youtu.be/5NZXGDLRR6s
 
 # Repository Link
 
-[LivePhotoToGIF_RN](https://github.com/isinthesky/LivePhotoToGIF_RN)
+[VideoToGIF_RN](https://github.com/isinthesky/VideoToGIF_RN)
 
-[LivePhotoToGIF_Sever](https://github.com/isinthesky/LivePhotoToGIF_Sever)
+[VideoToGIF_Sever](https://github.com/isinthesky/VideoToGIF_Sever)
 
 <br>
 
