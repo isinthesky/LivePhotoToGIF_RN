@@ -149,14 +149,8 @@ ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 
 <img width="288" alt="스크린샷 2023-06-05 오후 10 26 23" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/2d3a1920-d513-4f87-b24a-aefe03723768">
 
-(bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
-
-<img width="406" alt="스크린샷 2023-05-25 오후 10 13 05" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/5ea36e41-ecb3-4142-a36d-aa1dce788e45">
-
-`Bitmap` 의 `pixel data`배열은 `bgr Type`으로 뒤집혀 있어 데이터를 뒤집어 주었습니다. 
-(bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
-
-gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color table`과 `image data`를 얻었습니다. 
+(bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
+gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color table`과 `image data`를 얻었습니다.
 
 <br>
 </p>
