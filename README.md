@@ -193,7 +193,7 @@ a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 �
 
 | GIF File Format Summary | 설명           |
 | --------------- | ---------------- |
-| image<br>image  | Bitmap 파일을 이미지 프레임으로 사용<br>8bit format까지 지원<br>LZW 압축방식<br> bitmap file 형식과 같은 little endian File형식 |
+| <img width="382" alt="gif-format" src="https://github.com/isinthesky/VideoToGIF_RN/assets/52302090/efc83030-a488-4fe8-a244-b1d3b5383c55">  | - Bitmap Image를 프레임으로 사용<br>- 8bit format까지 지원<br>- LZW 압축방식<br>- bitmap file 형식과 같은 little endian File형식 |
 (출처: https://www.fileformat.info/format/gif/egff.htm)
 
 <br>
@@ -212,7 +212,7 @@ a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 �
 | Bitmap Color Bit  | Pixel 표현 형식    | 비고 |
 | --------------- | ---------------- | --- |
 | 8bit Bitmap | [ 1 Pixel : [Color table position : 8bit] ] | <img width="288" alt="스크린샷 2023-06-05 오후 10 26 23" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/2d3a1920-d513-4f87-b24a-aefe03723768"> |
-| 24bit Bitmap | [ 1 Pixel : [R : 8bit] [G : 8bit] [B : 8bit] ] |  color table을 사용하지 않고 해당 픽셀 값에 직접 RGB 값으로 표현 |
+| 24bit Bitmap | [ 1 Pixel : [R : 8bit] [G : 8bit] [B : 8bit] ] |  Color table을 사용하지 않고<br>해당 픽셀 값에 직접 RGB 값으로 표현 |
 
 <br>
 </p>
