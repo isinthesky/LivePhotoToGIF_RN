@@ -1,25 +1,28 @@
 # 📸**LivePhotoToGIF_RN**
 
-### 영상을 Gif파일로 변환하여 저장하고 사랑들과 공유할 수 있는 모바일 어플리케이션입니다.
+### 영상을 GIF파일로 변환하여 저장하고 사랑들과 공유할 수 있는 모바일 어플리케이션입니다.
 
-### Gif파일의 옵션을 제어하여 생성 할 수 있습니다.
+### GIF파일의 옵션을 제어하여 생성 할 수 있습니다.
 
 <br>
 
 # Table of Contents
 
 - [Preview](#preview)
+- [Features](#features)
 - [Motivation](#motivation)
 - [Challenges](#challenges)
   - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](#1-비디오에서-이미지-추출은-어떻게-해야할까)
     - [a. ffmpeg vs OpenCV](#a-ffmpeg-vs-opencv)
     - [b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?](#b-외부파일을-node환경에서-어떻게-실행할-수-있을까)
   - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까)
-    - [a. GIF에 어떤 image format을 삽입 해야 할까?](#a-gif에-어떤-image-format을-삽입-해야-할까)
-    - [b. 8bit bitmap의 데이터 구조](#b-8bit-bitmap의-데이터-구조)
-    - [c. GIF File 구조, Image frame 삽입](#c-gif-file-구조,-image-frame-삽입)
-    - [d. LZW 압축이란?](#d-lzw-압축이란)
-    - [e. gif option 적용](#e-gif-option-적용)
+    - [a. GIF의 구조를 먼저 살펴보자.](#a-gif의-구조를-먼저-살펴보자)
+    - [b. GIF File 구조에 Image frame를 쌓는다면?](#b-gif-file-구조에-image-frame를-쌓는다면)
+    - [c. GIF에 어떤 Image를 삽입 해야 할까?](#c-gif에-어떤-image를-삽입-해야-할까)
+    - [d. 8bit bitmap?](#d-8bit-bitmap)
+    - [e. ffmpeg을 활용하여 bitmap file을 추출해보자](#e-ffmpeg을-활용하여-bitmap-file을-추출해보자)
+    - [f. LZW 압축이란?](#f-lzw-압축이란)
+    - [g. GIF option 적용](#g-gif-option-적용)
   - [3. 너무나 많은걸 할 수 있는 ffmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
     - [a. 문제: Video의 Raw data는 bitmap이 아니다.](#a-문제-video의-raw-data는-bitmap이-아니다)
     - [b. 구현방향 수정: 효율과 과정사이](#b-구현방향-수정-효율과-과정사이)
@@ -35,6 +38,8 @@
 
 <br>
 
+<p>
+
 # Preview
 
 | 기본 화면                                                                                                         | 영상 등록 화면                                                                                                    | 변환 완료 화면                                                                                                    |
@@ -42,16 +47,37 @@
 | ![IMG_2298](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/f7c0bfb3-95b8-4896-a139-9a06361b1aa3) | ![IMG_2299](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/8701ab42-83c2-4576-b164-19044ac4af5d) | ![IMG_2300](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/05420e69-ad66-46ea-8058-4f89f9b9e7c2) |
 
 <br>
+</p>
+<p>
+
+# Features
+
+- 상단에 핑크색 `+` 버튼을 눌러 GIF로 변환할 동영상을 선택합니다.
+- 선택한 Video의 재생시간, 크기 정보와 미리보기 화면을 통해 올바른 Video의 등록을 확인합니다.
+- 정상적으로 Video가 등록되면 하단의 **Convert** 버튼이 진한 핑크로 활성화 됩니다.
+- **Scale** 옵션을 통하여 출력 이미지 크기를 조절하고 GIF Output Info 칸에서 실제로 출력될 이미지 크기를 확인합니다.
+- **FPS** 옵션을 조절해 1초에 몇개의 이미지를 재생할 건지 설정합니다. (기본 10개)
+- **Speed** 옵션을 조절해 GIF의 재생속도를 설정 합니다 (기본 1배)
+- **Flip**(상하반전), **Mirror**(좌우반전) 토글 버튼을 조절해 옵션적용을 활성화 합니다.
+- 원하는 옵션 설정 후 **Convert**버튼을 터치하여 GIF 변환을 시작합니다.
+- 변환 중을 표현하는 로딩화면 이후 결과 화면으로 변경되고 GIF Image를 모바일 화면에서 볼 수 있습니다.
+- 이미지를 길게 누르거나 **DownLoad** 버튼을 터치하여 Memo, 카카오톡 등 앱을 통해서 다운로드하고 공유할 수 있습니다.
+
+<br>
+</p>
+<p>
 
 # Motivation
 
 영상에 관심이 많은 저는 미디어를 다루는 프로젝트 아이디어를 고심했습니다.<br>
 미디어를 다루는 라이브러리를 사용하기보다는 컨텐츠의 데이터에 접근해보고 싶었습니다.<br>
-비디오에서 bmp, gif로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
+비디오에서 bmp, GIF로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
 영상에서 GIF 포맷으로 쉽고 빠르게 변환하여 반복 재생되는 GIF의 재미를 공유할 수 있게 구성하였습니다.<br>
 또한 개발을 접하고 처음 React native를 통해 모바일 환경에 도전하여 새로운 환경을 이해해 보고 싶었습니다.
+
 <br>
-<br>
+</p>
+
 
 # Challenges
 
@@ -63,7 +89,7 @@
 
 ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 video에서 이미지 추출이 가능하다는 정보를 얻었습니다.<br>
 거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 ffmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
-OpenCV를 사용하면 image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
+OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
 ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
 쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 ffmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 ffmpeg을 직접 사용하게 되었습니다.
 
@@ -79,29 +105,49 @@ ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어
 <p>
 
 ### b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?
+<br>
 
-- [child_process](https://nodejs.org/dist/latest-v20.x/docs/api/child_process.html)
+**b.1 Nodejs 환경에서 사용가능한 모듈**
+<br >
 
-node의 `child_process` 모듈은 popen과 유사하지만 동일하지는 않은 방식으로 하위 프로세스를 스폰하는 기능을 제공합니다.<br>
-`child_process`의 popen() 함수는 파이프를 생성하여 프로세스를 열고, 포크, 셸을 호출하여 프로세스를 엽니다.<br>
-파이프는 정의상 단방향이므로, 유형 인수는 읽기 또는 쓰기만 지정할 수 있습니다. 그에 따라 결과 스트림은 읽기 전용 또는 쓰기 전용이 됩니다.<br>
+| 구분 | [child_process](https://nodejs.org/dist/latest-v20.x/docs/api/child_process.html)          | [ShellJS](https://www.npmjs.com/package/shelljs)           |
+| ---- | --------------- | ---------------- |
+| 사용방법 | Node.js의 기본 내장 모듈  | npm 모듈 설치   |
+| 장점 | exec, spawn 등 실행방법의 다양한 메소드 제공 | Windows/Linux/OS X, 다양한 OS 환경을 지원한다. |
+| ffmpeg 사용에 적합한가? | 실행과 argument 삽입이 가능 | 실행과 argument 삽입이 가능 |
 
-`child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**됩니다.<br>
-따라서 `child_process.spawn({ffmpeg path}, [ffmpeg options])` 실행 후 결과 `Callback`을 `Promise`로 감싸 코드의 흐름을 제어했습니다.
 
-`child_process.spawn(command[, args][, options])` 메서드의 **args : List of string arguments**를 활용하여 ffmepg의 다양한 option 명령을 활용할 수 있었습니다.
+Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.
+OS에 크게 영향받지 않는 실행 환경과 기본 내장 모듈사용이라는 이점으로 child_process를 사용했습니다.<br>
+또한 결국 ffmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 ffmpeg을 실행하는 데에는 문제가 없었습니다.
+
+<br>
+
+**b.2 child_process에서 제공하는 메서드**
+<br>
+
+| 구분 | exec          | spawn           |
+| ---- | --------------- | ---------------- |
+| 장점 | 연속된 명령어 사용에 용이  | 새로운 프로세스를 활용하여 실행  |
+| 비고 | 메모리 제한 있음(기본 200kb) | 메모리 제한 없음 |
+
+ffmpeg의 사용은 Video File을 decoding하게 되고 많은 메모리를 사용하기 때문에 spawn 메소드를 활용하게 되었습니다.<br>
+spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 병렬 프로세싱 작업에도 적합할 거라 생각했습니다.
+
+코드에서 사용한 `child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**되기 때문에<br>
+`child_process.spawn({ffmpeg path}, [ffmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.
 
 ```js
 const execFile = require("child_process").spawn;
 
 const ffmpeg_callback = execFile({ffmpeg path}, [ffmpeg options]);
 
-return new Promise(
+return new Promise( // Promise를 통해 비동기 코드 흐름제어
   (resolve) => {
-    ffmpeg.stdout.on("data", (x) => {
+    ffmpeg_callback.stdout.on("data", (x) => {
       process.stdout.write(x.toString());
     });
-    ffmpeg.on("close", (code) => {
+    ffmpeg_callback.on("close", (code) => {
       resolve({ ok: true, code: code });
       return true;
     });
@@ -119,63 +165,74 @@ return new Promise(
 
 ## 2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?
 
-![gif_file_stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
+<br>
+</p>
+<p>
 
-간략한 GIF 파일의 구조와 데이터 흐름은, 앞쪽 GIF의 Image Header 부분과 반복되는 Image Frame 부분으로 볼 수 있겠습니다.
+### a. GIF의 구조를 먼저 살펴보자.
+
+ 큰 틀에서 보면 앞쪽 Image Header 부분과 반복되는 Image frame 부분으로 나눌 수 있습니다.
+
+![GIF_File_Stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
 
 <br>
 </p>
 <p>
 
-### a. GIF에 어떤 image format을 삽입 해야 할까?
+### b. GIF File 구조에 Image frame를 쌓는다면?
 
-<img width="420" alt="스크린샷 2023-05-25 오후 9 56 07" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/cf5ef29b-d337-4c85-bf05-0328b8fb3d6e"><br>
+![GIF file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
+
+a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 모습이 됩니다.
+
+<br>
+</p>
+<p>
+
+### c. GIF에 어떤 Image를 삽입 해야 할까?
+
+| GIF File Format Summary | 설명           |
+| --------------- | ---------------- |
+| image<br>image  | Bitmap 파일을 이미지 프레임으로 사용<br>8bit format까지 지원<br>LZW 압축방식<br> bitmap file 형식과 같은 little endian File형식 |
 (출처: https://www.fileformat.info/format/gif/egff.htm)
 
-최대 **8Bit Bitmap** 이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다..
+<br>
+</p>
+<p>
+
+### d. 8bit bitmap?
+
+우리가 웹에서 사용하는 bitmap file의 포맷은 24 또는 32bit Bitmap 입니다.<br>
+조금은 생소한 8bit Bitmap은 뿌옇게 변해버리는 GIF 이미지의 원인입니다.
+
+앞의 숫자 bit는 bitmap 이미지 파일이 사용하는 Pixel의 색상의 갯수입니다. 따라서 8bit bitmap File은 256개의 color를 가지고 이미지를 표현하게 됩니다.<br>
+8bit bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 bitmap을 표현하게 됩니다.<br>
+
+
+| Bitmap Color Bit  | Pixel 표현 형식    | 비고 |
+| --------------- | ---------------- | --- |
+| 8bit Bitmap | [ 1 Pixel : [Color table position : 8bit] ] | <img width="288" alt="스크린샷 2023-06-05 오후 10 26 23" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/2d3a1920-d513-4f87-b24a-aefe03723768"> |
+| 24bit Bitmap | [ 1 Pixel : [R : 8bit] [G : 8bit] [B : 8bit] ] |  color table을 사용하지 않고 해당 픽셀 값에 직접 RGB 값으로 표현 |
+
+<br>
+</p>
+<p>
+
+### e. ffmpeg을 활용하여 bitmap file을 추출해보자
+
+ffmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다.
 
 ```
 ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
-<br>
-</p>
-<p>
-  
-<img width="540" alt="스크린샷 2023-05-25 오후 9 56 07" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/cf5ef29b-d337-4c85-bf05-0328b8fb3d6e"><br>
-(출처: https://www.fileformat.info/format/gif/egff.htm)
-
-최대 `8bit bitmap`이미지 형식을 지원하는 GIF는 ffmpeg의 추출 pixel_format 옵션에 8bit bitmap 추출 옵션인 `bgr8`를 적용하여 bitmap 파일을 얻었습니다.
-
-<img width="288" alt="스크린샷 2023-06-05 오후 10 26 23" src="https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/2d3a1920-d513-4f87-b24a-aefe03723768">
-
 (bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
-gif에 삽입하기 위한 이미지 데이터 8bit bitmap file에서 `color table`과 `image data`를 얻었습니다.
 
 <br>
 </p>
 <p>
 
-### c. GIF File 구조, Image frame 삽입
-
-![gif file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
-
-GIF 파일은 0개 이상의 '이미지'로 채워진 고정된 크기의 그래픽 영역('논리적 화면')을 나타냅니다.<br>
-GIF 파일에는 전체 논리적 화면을 채우는 단일 이미지가 있습니다. 다른 파일은 논리 화면을 별도의 하위 이미지로 나눕니다.
-
-GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 시작하고, 그 뒤에 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자가 이어집니다.<br> 화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 이 테이블이 있는 경우 다음에 이어집니다.<br>
-저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략하였습니다.
-
-GIF 파일은 Image frame data에 **LZW 압축 알고리즘**이 적용되어 있습니다.
-
-GIF 파일의 Image frame을 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 Color Table 과 Image Data입니다.
-Color Table Data는 그대로 데이터를 삽입하지만 이미지 데이터는 LZW 데이터 압축을 적용해 준 후에 삽입해야합니다.
-
-<br>
-</p>
-<p>
-
-### d. LZW 압축이란???
+### f. LZW 압축이란?
 
 LZW 알고리즘은 Lempel-Ziv-Welch의 약자로 **무손실 압축 알고리즘**입니다.
 Lempel-Ziv가 만든 LZ78 알고리즘을 개선한 버전입니다.
@@ -218,7 +275,7 @@ P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자
 </p>
 <p>
 
-### e. GIF option 적용
+### g. GIF option 적용
 
 scale - bitmap의 메모리 저장, 이미지 처리 효율 특성으로 이미지 너비를 4배수로 처리 했습니다.
 
@@ -430,11 +487,11 @@ https://youtu.be/5NZXGDLRR6s
 
 # Memoir
 
-ffmpeg을 통해 얻은 bitmap file을 사용하여 gif 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
-wikipedia의 image foramt 문서를 통해 bitmap file과 gif file의 구조를 이해하고 gif header data를 구성하고 frame image에 옵션을 설정하고 image data를 압축한 후에 gif 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
+ffmpeg을 통해 얻은 bitmap file을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
+wikipedia의 Image foramt 문서를 통해 bitmap file과 GIF file의 구조를 이해하고 GIF header data를 구성하고 frame Image에 옵션을 설정하고 Image data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
 
 어찌보면 메인 도전이였던 GIF File 생성은 standard format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
 
-그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 모바일 앱에서 server와 데이터를 주고 받으며 생성된 gif가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
+그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 모바일 앱에서 server와 데이터를 주고 받으며 생성된 GIF가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
 
 이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다.<br>화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
