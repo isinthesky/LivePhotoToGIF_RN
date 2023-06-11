@@ -24,12 +24,12 @@
     - [f. LZW 압축이란?](#f-lzw-압축이란)
     - [g. GIF option 적용](#g-gif-option-적용)
   - [3. 너무나 많은걸 할 수 있는 ffmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
-    - [a. 문제: Video의 Raw data는 bitmap이 아니다.](#a-문제-video의-raw-data는-bitmap이-아니다)
+    - [a. 문제: Video의 Raw Data는 Bitmap이 아니다.](#a-문제-video의-raw-data는-bitmap이-아니다)
     - [b. 구현방향 수정: 효율과 과정사이](#b-구현방향-수정-효율과-과정사이)
   - [4. React navtive CLI?](#4-react-navtive-cli)
     - [a. 심플하지만 다있는 UI](#a-심플하지만-다있는-ui)
     - [b. Navigation으로 모션 화면전환](#b-navigation으로-모션-화면전환)
-    - [c. video file 전송](#c-video-file-전송)
+    - [c. Video File 전송](#c-video-file-전송)
 - [Timeline](#timeline)
 - [Video](#video)
 - [Tech stack](#tech-stack)
@@ -87,7 +87,7 @@
 
 ### a. ffmpeg vs OpenCV
 
-ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 video에서 이미지 추출이 가능하다는 정보를 얻었습니다.<br>
+ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 Video에서 이미지 추출이 가능하다는 정보를 얻었습니다.<br>
 거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 ffmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
 OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
 ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
@@ -163,13 +163,26 @@ spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 �
 
 a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 모습이 됩니다.
 
+**b-1. GIF Header에 필요한 정보**
+
+GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면') 정보와 GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 정보,<br>
+그뒤로 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자를 넣어줍니다.<br>화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략하였습니다.
+
+**b-2. Image Frame 삽입에 필요한 정보**
+
+GIF 파일은 `Image Frame Data` 에 **LZW 압축 알고리즘**이 적용되어 있습니다.
+
+GIF 파일의 **Image frame을** 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 `Color Table` 과 `Image Data`입니다.<br>
+`Color Table`은 그대로 데이터를 삽입하지만 `Image Data`는 **LZW 데이터 압축**을 적용해 준 후에 삽입해야합니다. [[f. LZW 압축이란?](#f-lzw-압축이란)]
+
+
 <br>
 </p>
 <p>
 
 ### c. GIF에 어떤 Image를 삽입 해야 할까?
 
-| GIF File Format Summary | 설명           |
+| GIF File Format Summary | 주요 설명           |
 | --------------- | ---------------- |
 | <img width="382" alt="gif-format" src="https://github.com/isinthesky/VideoToGIF_RN/assets/52302090/efc83030-a488-4fe8-a244-b1d3b5383c55">  | - Bitmap Image를 프레임으로 사용<br>- 8bit format까지 지원<br>- LZW 압축방식<br>- bitmap file 형식과 같은 little endian File형식 |
 (출처: https://www.fileformat.info/format/gif/egff.htm)
@@ -270,18 +283,7 @@ ffmpeg -i {inputPath.mp4} -vf {vflip} {hflip} {outputPath.bmp}
 delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간으로 1/100초 단위로 세팅 됩니다.<br>
 **delay = (time / fps) \* (time / speed)**<br>
 fps 와 speed 값은 커질수록 다음 프레임으로 빨리 전환되는 수치이지만
-GIF의 delay option 은 반대로 빨리 전환되기 위해 값이 작아져야 합니다.
-
-```js
-buf[position++] = 0x21; // - Graphics Control Extension
-buf[position++] = 0xf9; // Extension / Label.
-buf[position++] = 4; // Byte size.
-buf[position++] = use_transparency === true ? 1 : 0;
-buf[position++] = { delay } & 0xff;
-buf[position++] = ({ delay } >> 8) & 0xff;
-buf[position++] = transparent_index;
-buf[position++] = 0; // Block Terminator.
-```
+GIF의 delay option 은 반대로 빨리 전환되기 위해 값이 작아져야 합니다. [ [code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/makeGif.js#L149) ]
 
 <br>
 </p>
@@ -289,13 +291,13 @@ buf[position++] = 0; // Block Terminator.
 
 ## 3. 너무나 많은걸 할 수 있는 ffmpeg
 
-### a. 문제: Video의 Raw data는 bitmap이 아니다.
+### a. 문제: Video의 Raw Data는 bitmap이 아니다.
 
-- [YUView](https://github.com/IENT/YUView)
-
-ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
+ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
 추출한 yuv 파일을 `yuv viewer`앱을 통해서 정상 이미지를 확인한 후에 Bitmap 파일로 변환 하려고 하는 과정에서 옳은 방향인가에 대해서 고민하게 되었습니다.<br>
-예상을 벗어나는 raw data file의 엄청난 크기로 인해 다른 문제를 일으킬 가능성도 있어보였습니다.
+예상을 벗어나는 Raw Data File의 엄청난 크기로 인해 다른 문제를 일으킬 가능성도 있어보였습니다.
+
+- [yuv viewer [ YUView ]](https://github.com/IENT/YUView)
 
 <br>
 </p>
@@ -307,7 +309,7 @@ ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 
 목표인 GIF File을 빠르게 생성하는 것도 앱의 지향점이기 때문에 Video File에서 Bitmap Image를 추출하는 것으로 방향을 수정 했습니다.<br>
 또한 포맷 변경과정에서의 예상보다 훨씬 많은 메모리를 사용하는 것도 과정을 줄이게 되는 이유중에 하나 이기도 했습니다.<br>
 
-조금 나중에 알게되었지만 ffmpeg을 사용하면 video format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
+조금 나중에 알게되었지만 ffmpeg을 사용하면 Video Format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
 하지만 GIF File 구조를 직접 생성하는 과정에서 Frame Delay와 같은 개별적인 option 설정할 수 있기 때문에 장점도 있었습니다.
 
 <br>
@@ -327,34 +329,9 @@ ffmpeg을 활용하여 video의 raw data를 추출한다면 Bitmap이 아니라 
 
 쉽고 간단하게 GIF로 변환 하고 빨리 결과를 볼 수 있는 어플을 의도하고 제작하면서도 필수 기본적인 정보들(video infomation, preview, file size)을 담기위해 노력했습니다.
 
-react native vlc media player를 활용하여 모바일에 저장된 Video file을 재생하였고 무한반복 기능을 설정하여 GIF로 변경되었을 때의 느낌을 미리 느껴볼 수 있도록 했습니다.
+react native vlc media player를 활용하여 모바일에 저장된 Video File을 재생하였고 무한반복 기능을 설정하여 GIF로 변경되었을 때의 느낌을 미리 느껴볼 수 있도록 했습니다.
 
-기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.**
-
-```js
-content.video ? (
-  <VLCPlayer
-    style={styles.player}
-    videoAspectRatio="16:10"
-    autoplay={true}
-    autoReloadLive={true}
-    source={{
-      uri: content.video ? content.video.uri : "",
-      isNetwork: false,
-      isAsset: true,
-      autoplay: true,
-    }}
-  />
-) : (
-  <View style={styles.LogoBox}>
-    <Text style={styles.Logo1}>
-      Video{"     "}
-      {"\n"}
-      {"     "} to GIF
-    </Text>
-  </View>
-);
-```
+기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.** [[Preview](#preview)] [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/components/GifInfo.js#L50) ]
 
 <br>
 </p>
@@ -363,45 +340,18 @@ content.video ? (
 ### b. Navigation으로 모션 화면전환
 
 페이지가 2개(옵션설정 메인창, 결과창) 인 모바일 어플리케이션이지만 버튼 만으로 페이지를 이동하고 싶지 않았습니다.<br>
-`NativeStackNavigator`를 활용하여 메인창과 결과창을 이동가능하게 구성하였고, 측면의 넘기는 모션을 활용하여 화면 전환도 가능하게 하였습니다.
-
-```js
-<NavigationContainer>
-  <Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
-    <Screen name="Main" component={Main} />
-    <Screen name="Viewer" component={Viewer} />
-  </Navigator>
-</NavigationContainer>
-```
+`NativeStackNavigator`를 활용하여 메인창과 결과창을 이동가능하게 구성하였고, 측면의 넘기는 모션을 활용하여 화면 전환도 가능하게 하였습니다. [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/navigator/AppNavigator.js#L12) ]
 
 <br>
 </p>
 <p>
 
-### c. file 전송
+### c. Video file 전송
 
 Video File을 서버로 전송하기위해 FormData형식을 활용하였습니다. <br>
-처음엔 GIF의 옵션 정보를 보내기위해 두번 전송하는 구성을 했었는데 여러번의 시도와 수정 후에 FileData와 옵션 정보들을 함께 보낼 수 있었습니다.
+처음엔 GIF의 옵션 정보를 보내기위해 두번 전송하는 구성을 했었는데 여러번의 시도와 수정 후에 FileData와 옵션 정보들을 함께 보낼 수 있었습니다. [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/features/api/index.js#L11) ]
 
-```js
-// Client
-const formData = new FormData();
-formData.append("file", {
-  uri: video.uri,
-  type: "multipart/form-data",
-  name: video.fileName,
-});
-
-formData.append("option", JSON.stringify(option));
-
-const res = await axiosInstance.put("/video/", formData, {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
-```
-
-nodejs express Server에서는 multer를 활용하여 File Data 전달 받았습니다.
+Nodejs환경의 Express Server에서는 multer를 활용하여 File Data 전달 받았습니다.
 body내 option 객체로 GIF 옵션 정보도 함께 전달 받았습니다.
 
 ```js
@@ -440,18 +390,22 @@ https://youtu.be/5NZXGDLRR6s
 
 # Tech stack
 
-### Frontend
+## Frontend
 
-- React native (CLI)
-- react-redux
-- ESLint
+| name | description   |
+| ---- | --------------- |
+| React native (CLI) | Native기능인 ios의 LivePhoto도 변환할 수 있는 확장성을 고려해 CLI를 선택하게 되었습니다. |
+| react-redux | Video Content 정보와 GIF Option 정보 관리를 위해 사용하였습니다. |
+| ESLint | - |
 
-### Backend
+## Backend
 
-- [Node.js](https://nodejs.org/ko/)
-- [Express](https://expressjs.com/ko/)
-- [ffmpeg](https://ffmpeg.org/)
-- ESLint
+| name | description   |
+| ---- | --------------- |
+| [Node.js](https://nodejs.org/ko/) | - |
+| [Express](https://expressjs.com/ko/) | javascript로 구축할 수 있는 강력한 웹 server 플랫폼을 사용하였습니다. |
+| [ffmpeg](https://ffmpeg.org/) | 강력한 디코딩 기능을 제공하는 ffmpeg을 사용함으로서 대부분의 Video Format에서 Bitmap File을 추출하기 위해 사용했습니다. |
+| ESLint | - |
 
 <br>
 
@@ -466,7 +420,7 @@ https://youtu.be/5NZXGDLRR6s
 # Memoir
 
 ffmpeg을 통해 얻은 bitmap file을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
-wikipedia의 Image foramt 문서를 통해 bitmap file과 GIF file의 구조를 이해하고 GIF header data를 구성하고 frame Image에 옵션을 설정하고 Image data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
+wikipedia의 Image foramt 문서를 통해 bitmap file과 GIF file의 구조를 이해하고 GIF Header Data를 구성하고 frame Image에 옵션을 설정하고 Image Data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
 
 어찌보면 메인 도전이였던 GIF File 생성은 standard format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
 
