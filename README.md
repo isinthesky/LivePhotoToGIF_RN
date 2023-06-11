@@ -135,29 +135,7 @@ ffmpeg의 사용은 Video File을 decoding하게 되고 많은 메모리를 사�
 spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 병렬 프로세싱 작업에도 적합할 거라 생각했습니다.
 
 코드에서 사용한 `child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**되기 때문에<br>
-`child_process.spawn({ffmpeg path}, [ffmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.
-
-```js
-const execFile = require("child_process").spawn;
-
-const ffmpeg_callback = execFile({ffmpeg path}, [ffmpeg options]);
-
-return new Promise( // Promise를 통해 비동기 코드 흐름제어
-  (resolve) => {
-    ffmpeg_callback.stdout.on("data", (x) => {
-      process.stdout.write(x.toString());
-    });
-    ffmpeg_callback.on("close", (code) => {
-      resolve({ ok: true, code: code });
-      return true;
-    });
-  },
-  (reject) => {
-    console.error("extractBmp error:", reject);
-    return false;
-  },
-);
-```
+`child_process.spawn({ffmpeg path}, [ffmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.[[code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/extractBmp.js#L19)]
 
 <br>
 </p>
