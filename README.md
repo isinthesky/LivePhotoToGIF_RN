@@ -52,15 +52,15 @@
 
 # Features
 
-- 상단에 핑크색 `+` 버튼을 눌러 GIF로 변환할 동영상을 선택합니다.
+- 상단에 핑크색 `+` 버튼을 눌러 GIF로 변환할 Video를 선택합니다.
 - 선택한 Video의 재생시간, 크기 정보와 미리보기 화면을 통해 올바른 Video의 등록을 확인합니다.
 - 정상적으로 Video가 등록되면 하단의 **Convert** 버튼이 진한 핑크로 활성화 됩니다.
 - **Scale** 옵션을 통하여 출력 이미지 크기를 조절하고 GIF Output Info 칸에서 실제로 출력될 이미지 크기를 확인합니다.
 - **FPS** 옵션을 조절해 1초에 몇개의 이미지를 재생할 건지 설정합니다. (기본 10개)
-- **Speed** 옵션을 조절해 GIF의 재생속도를 설정 합니다 (기본 1배)
-- **Flip**(상하반전), **Mirror**(좌우반전) 토글 버튼을 조절해 옵션적용을 활성화 합니다.
+- **Speed** 옵션을 조절해 GIF의 재생속도를 설정 합니다. (기본 1배)
+- **Flip**(상하반전), **Mirror**(좌우반전) 토글 버튼을 터치해 옵션을 활성화 할 수 있습니다.
 - 원하는 옵션 설정 후 **Convert**버튼을 터치하여 GIF 변환을 시작합니다.
-- 변환 중을 표현하는 로딩화면 이후 결과 화면으로 변경되고 GIF Image를 모바일 화면에서 볼 수 있습니다.
+- 변환 중을 표현하는 로딩화면 이후 결과 화면으로 변경되고 변환된 GIF Image가 모바일 화면에 재생됩니다.
 - 이미지를 길게 누르거나 **DownLoad** 버튼을 터치하여 Memo, 카카오톡 등 앱을 통해서 다운로드하고 공유할 수 있습니다.
 
 <br>
@@ -118,8 +118,8 @@ ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어
 
 
 Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.
-OS에 크게 영향받지 않는 실행 환경과 기본 내장 모듈사용이라는 이점으로 child_process를 사용했습니다.<br>
-또한 결국 ffmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 ffmpeg을 실행하는 데에는 문제가 없었습니다.
+Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 사용했습니다.<br>
+중요한 ffmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 ffmpeg을 실행하는 데에는 문제가 없었습니다.
 
 <br>
 
@@ -166,7 +166,7 @@ a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 �
 **b-1. GIF Header에 필요한 정보**
 
 GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면') 정보와 GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 정보,<br>
-그뒤로 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자를 넣어줍니다.<br>화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략하였습니다.
+그뒤로 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자를 넣어줍니다.<br>화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략했습니다.
 
 **b-2. Image Frame 삽입에 필요한 정보**
 
@@ -217,7 +217,7 @@ ffmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용
 ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
-(bitmap image data 배열은 windows의 little endian 형식으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
+(bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
 
 <br>
 </p>
@@ -331,7 +331,7 @@ ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 
 
 react native vlc media player를 활용하여 모바일에 저장된 Video File을 재생하였고 무한반복 기능을 설정하여 GIF로 변경되었을 때의 느낌을 미리 느껴볼 수 있도록 했습니다.
 
-기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.** [[Preview](#preview)] [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/components/GifInfo.js#L50) ]
+기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.**  <br> [[Preview](#preview)] [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/components/GifInfo.js#L50) ]
 
 <br>
 </p>
