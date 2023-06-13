@@ -1,6 +1,6 @@
 # 📸**LivePhotoToGIF_RN**
 
-### 영상을 GIF파일로 변환하여 저장하고 사랑들과 공유할 수 있는 모바일 어플리케이션입니다.
+### 영상을 GIF파일로 변환하여 저장하고 사람들과 공유할 수 있는 모바일 애플리케이션입니다.
 
 ### GIF파일의 옵션을 제어하여 생성 할 수 있습니다.
 
@@ -17,10 +17,10 @@
     - [b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?](#b-외부파일을-node환경에서-어떻게-실행할-수-있을까)
   - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까)
     - [a. GIF의 구조를 먼저 살펴보자.](#a-gif의-구조를-먼저-살펴보자)
-    - [b. GIF File 구조에 Image frame를 쌓는다면?](#b-gif-file-구조에-image-frame를-쌓는다면)
+    - [b. GIF File 구조에 Image Frame를 쌓는다면?](#b-gif-file-구조에-image-frame를-쌓는다면)
     - [c. GIF에 어떤 Image를 삽입 해야 할까?](#c-gif에-어떤-image를-삽입-해야-할까)
-    - [d. 8bit bitmap?](#d-8bit-bitmap)
-    - [e. ffmpeg을 활용하여 bitmap file을 추출해보자](#e-ffmpeg을-활용하여-bitmap-file을-추출해보자)
+    - [d. 8bit Bitmap?](#d-8bit-bitmap)
+    - [e. ffmpeg을 활용하여 Bitmap File을 추출해보자](#e-ffmpeg을-활용하여-bitmap-file을-추출해보자)
     - [f. LZW 압축이란?](#f-lzw-압축이란)
     - [g. GIF option 적용](#g-gif-option-적용)
   - [3. 너무나 많은걸 할 수 있는 ffmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
@@ -72,7 +72,7 @@
 영상에 관심이 많은 저는 미디어를 다루는 프로젝트 아이디어를 고심했습니다.<br>
 미디어를 다루는 라이브러리를 사용하기보다는 컨텐츠의 데이터에 접근해보고 싶었습니다.<br>
 비디오에서 bmp, GIF로 포맷 변환 하는 과정을 거치며 해당 미디어 포맷에 대한 특징과 구성, 파일 시스템을 깊이 배워보는 좋은 기회로 생각되어 시작하게 되었습니다.<br>
-영상에서 GIF 포맷으로 쉽고 빠르게 변환하여 반복 재생되는 GIF의 재미를 공유할 수 있게 구성하였습니다.<br>
+영상에서 GIF 포맷으로 쉽고 빠르게 변환하여 반복 재생되는 GIF의 재미를 공유할 수 있게 구성했습니다.<br>
 또한 개발을 접하고 처음 React native를 통해 모바일 환경에 도전하여 새로운 환경을 이해해 보고 싶었습니다.
 
 <br>
@@ -91,7 +91,7 @@ ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 Video에서
 거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 ffmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
 OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
 ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
-쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 ffmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 ffmpeg을 직접 사용하게 되었습니다.
+쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 ffmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 ffmpeg을 직접 사용했습니다.
 
 | 구분 | ffmpeg          | OpenCV           |
 | ---- | --------------- | ---------------- |
@@ -149,7 +149,7 @@ spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 �
 
 ### a. GIF의 구조를 먼저 살펴보자.
 
- 큰 틀에서 보면 앞쪽 Image Header 부분과 반복되는 Image frame 부분으로 나눌 수 있습니다.
+ 큰 틀에서 보면 앞쪽 Image Header 부분과 반복되는 Image Frame 부분으로 나눌 수 있습니다.
 
 ![GIF_File_Stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
 
@@ -157,9 +157,9 @@ spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 �
 </p>
 <p>
 
-### b. GIF File 구조에 Image frame를 쌓는다면?
+### b. GIF File 구조에 Image Frame를 쌓는다면?
 
-![GIF file structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
+![GIF File Structure](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/c34ebb9a-6acb-4010-8b01-630d758f60be)
 
 a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 모습이 됩니다.
 
@@ -172,7 +172,7 @@ GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면'
 
 GIF 파일은 `Image Frame Data` 에 **LZW 압축 알고리즘**이 적용되어 있습니다.
 
-GIF 파일의 **Image frame을** 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 `Color Table` 과 `Image Data`입니다.<br>
+GIF 파일의 **Image Frame을** 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 `Color Table` 과 `Image Data`입니다.<br>
 `Color Table`은 그대로 데이터를 삽입하지만 `Image Data`는 **LZW 데이터 압축**을 적용해 준 후에 삽입해야합니다. [[f. LZW 압축이란?](#f-lzw-압축이란)]
 
 
@@ -191,13 +191,13 @@ GIF 파일의 **Image frame을** 구성하기위해 Bitmap File에서 사용하�
 </p>
 <p>
 
-### d. 8bit bitmap?
+### d. 8bit Bitmapitmap?
 
-우리가 웹에서 사용하는 bitmap file의 포맷은 24 또는 32bit Bitmap 입니다.<br>
+우리가 웹에서 사용하는 Bitmap File의 포맷은 24 또는 32bit Bitmap 입니다.<br>
 조금은 생소한 8bit Bitmap은 뿌옇게 변해버리는 GIF 이미지의 원인입니다.
 
-앞의 숫자 bit는 bitmap 이미지 파일이 사용하는 Pixel의 색상의 갯수입니다. 따라서 8bit bitmap File은 256개의 color를 가지고 이미지를 표현하게 됩니다.<br>
-8bit bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 bitmap을 표현하게 됩니다.<br>
+앞의 숫자 bit는 Bitmap 이미지 파일이 사용하는 Pixel의 색상의 갯수입니다. 따라서 8bit Bitmap File은 256개의 color를 가지고 이미지를 표현하게 됩니다.<br>
+8bit Bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 Bitmap을 표현하게 됩니다.<br>
 
 
 | Bitmap Color Bit  | Pixel 표현 형식    | 비고 |
@@ -209,7 +209,7 @@ GIF 파일의 **Image frame을** 구성하기위해 Bitmap File에서 사용하�
 </p>
 <p>
 
-### e. ffmpeg을 활용하여 bitmap file을 추출해보자
+### e. ffmpeg을 활용하여 Bitmap File을 추출해보자
 
 ffmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다.
 
@@ -217,7 +217,7 @@ ffmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용
 ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
-(bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
+(Bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
 
 <br>
 </p>
@@ -268,13 +268,13 @@ P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자
 
 ### g. GIF option 적용
 
-scale - bitmap의 메모리 저장, 이미지 처리 효율 특성으로 이미지 너비를 4배수로 처리 했습니다.
+scale - Bitmap의 메모리 저장, 이미지 처리 효율 특성으로 이미지 너비를 4배수로 처리 했습니다.
 
 ```
 ffmpeg -i {inputPath.mp4} -vf scale={width-px:height-px} {outputPath.bmp}
 ```
 
-flip/mirror - ffmpeg에서 bitmap file을 추출하는 과정에서 flip/mirror 옵션을 추가하여 옵션을 적용한 이미지를 얻을 수 있게 했습니다.
+flip/mirror - ffmpeg에서 Bitmap File을 추출하는 과정에서 flip/mirror 옵션을 추가하여 옵션을 적용한 이미지를 얻을 수 있게 했습니다.
 
 ```
 ffmpeg -i {inputPath.mp4} -vf {vflip} {hflip} {outputPath.bmp}
@@ -291,7 +291,7 @@ GIF의 delay option 은 반대로 빨리 전환되기 위해 값이 작아져야
 
 ## 3. 너무나 많은걸 할 수 있는 ffmpeg
 
-### a. 문제: Video의 Raw Data는 bitmap이 아니다.
+### a. 문제: Video의 Raw Data는 Bitmap이 아니다.
 
 ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
 추출한 yuv 파일을 `yuv viewer`앱을 통해서 정상 이미지를 확인한 후에 Bitmap 파일로 변환 하려고 하는 과정에서 옳은 방향인가에 대해서 고민하게 되었습니다.<br>
@@ -346,7 +346,7 @@ react native vlc media player를 활용하여 모바일에 저장된 Video File�
 </p>
 <p>
 
-### c. Video file 전송
+### c. Video File 전송
 
 Video File을 서버로 전송하기위해 FormData형식을 활용하였습니다. <br>
 처음엔 GIF의 옵션 정보를 보내기위해 두번 전송하는 구성을 했었는데 여러번의 시도와 수정 후에 FileData와 옵션 정보들을 함께 보낼 수 있었습니다. [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/features/api/index.js#L11) ]
@@ -419,8 +419,8 @@ https://youtu.be/5NZXGDLRR6s
 
 # Memoir
 
-ffmpeg을 통해 얻은 bitmap file을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
-wikipedia의 Image foramt 문서를 통해 bitmap file과 GIF file의 구조를 이해하고 GIF Header Data를 구성하고 frame Image에 옵션을 설정하고 Image Data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
+ffmpeg을 통해 얻은 Bitmap File을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
+wikipedia의 Image foramt 문서를 통해 Bitmap File과 GIF File의 구조를 이해하고 GIF Header Data를 구성하고 Frame Image에 옵션을 설정하고 Image Data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
 
 어찌보면 메인 도전이였던 GIF File 생성은 standard format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
 
