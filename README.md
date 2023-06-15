@@ -1,8 +1,8 @@
 # 📸**LivePhotoToGIF_RN**
 
-### 영상을 GIF파일로 변환하여 저장하고 사람들과 공유할 수 있는 모바일 애플리케이션입니다.
+### 영상을 GIF파일로 변환하여 사람들과 공유할 수 있는 모바일 애플리케이션입니다.
 
-### GIF파일의 옵션을 제어하여 생성 할 수 있습니다.
+### GIF파일의 옵션을 제어하여 변환 할 수 있습니다.
 
 <br>
 
@@ -13,17 +13,17 @@
 - [Motivation](#motivation)
 - [Challenges](#challenges)
   - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](#1-비디오에서-이미지-추출은-어떻게-해야할까)
-    - [a. ffmpeg vs OpenCV](#a-ffmpeg-vs-opencv)
-    - [b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?](#b-외부파일을-node환경에서-어떻게-실행할-수-있을까)
+    - [a. FFmpeg vs OpenCV](#a-ffmpeg-vs-opencv)
+    - [b. npm 라이브러리가 아닌 FFmpeg을 node환경에서 어떻게 실행할 수 있을까?](#b-npm-라이브러리가-아닌-FFmpeg을-node환경에서-어떻게-실행할-수-있을까)
   - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까)
     - [a. GIF의 구조를 먼저 살펴보자.](#a-gif의-구조를-먼저-살펴보자)
     - [b. GIF File 구조에 Image Frame를 쌓는다면?](#b-gif-file-구조에-image-frame를-쌓는다면)
     - [c. GIF에 어떤 Image를 삽입 해야 할까?](#c-gif에-어떤-image를-삽입-해야-할까)
     - [d. 8bit Bitmap?](#d-8bit-bitmap)
-    - [e. ffmpeg을 활용하여 Bitmap File을 추출해보자](#e-ffmpeg을-활용하여-bitmap-file을-추출해보자)
+    - [e. FFmpeg을 활용하여 Bitmap File을 추출해보자](#e-ffmpeg을-활용하여-bitmap-file을-추출해보자)
     - [f. LZW 압축이란?](#f-lzw-압축이란)
     - [g. GIF option 적용](#g-gif-option-적용)
-  - [3. 너무나 많은걸 할 수 있는 ffmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
+  - [3. 너무나 많은걸 할 수 있는 FFmpeg](#3-너무나-많은걸-할-수-있는-ffmpeg)
     - [a. 문제: Video의 Raw Data는 Bitmap이 아니다.](#a-문제-video의-raw-data는-bitmap이-아니다)
     - [b. 구현방향 수정: 효율과 과정사이](#b-구현방향-수정-효율과-과정사이)
   - [4. React navtive CLI?](#4-react-navtive-cli)
@@ -85,15 +85,15 @@
 
 <p>
 
-### a. ffmpeg vs OpenCV
+### a. FFmpeg vs OpenCV
 
 ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 Video에서 이미지 추출이 가능하다는 정보를 얻었습니다.<br>
-거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 ffmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
+거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 FFmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
 OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
-ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
-쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 ffmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 ffmpeg을 직접 사용했습니다.
+FFmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
+쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 FFmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 FFmpeg을 직접 사용했습니다.
 
-| 구분 | ffmpeg          | OpenCV           |
+| 구분 | FFmpeg          | OpenCV           |
 | ---- | --------------- | ---------------- |
 | 활용 | 모든 Media 범용 | Image 프로세싱   |
 | 실행 | 외부 실행파일   | Software Library |
@@ -104,22 +104,22 @@ ffmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어
 </p>
 <p>
 
-### b. 외부파일을 node환경에서 어떻게 실행할 수 있을까?
+### b. npm 라이브러리가 아닌 FFmpeg을 node환경에서 어떻게 실행할 수 있을까?
 <br>
 
-**b.1 Nodejs 환경에서 사용가능한 모듈**
+**b.1 Nodejs 환경에서 외부파일을 실행해주는 모듈**
 <br >
 
 | 구분 | [child_process](https://nodejs.org/dist/latest-v20.x/docs/api/child_process.html)          | [ShellJS](https://www.npmjs.com/package/shelljs)           |
 | ---- | --------------- | ---------------- |
 | 사용방법 | Node.js의 기본 내장 모듈  | npm 모듈 설치   |
 | 장점 | exec, spawn 등 실행방법의 다양한 메소드 제공 | Windows/Linux/OS X, 다양한 OS 환경을 지원한다. |
-| ffmpeg 사용에 적합한가? | 실행과 argument 삽입이 가능 | 실행과 argument 삽입이 가능 |
+| FFmpeg 사용에 적합한가? | 실행과 argument 삽입이 가능 | 실행과 argument 삽입이 가능 |
 
 
 Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.
 Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 사용했습니다.<br>
-중요한 ffmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 ffmpeg을 실행하는 데에는 문제가 없었습니다.
+중요한 FFmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 FFmpeg을 실행하는 데에는 문제가 없었습니다.
 
 <br>
 
@@ -131,11 +131,11 @@ Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 �
 | 장점 | 연속된 명령어 사용에 용이  | 새로운 프로세스를 활용하여 실행  |
 | 비고 | 메모리 제한 있음(기본 200kb) | 메모리 제한 없음 |
 
-ffmpeg의 사용은 Video File을 decoding하게 되고 많은 메모리를 사용하기 때문에 spawn 메소드를 활용하게 되었습니다.<br>
+FFmpeg의 사용은 Video File을 decoding하게 되고 많은 메모리를 사용하기 때문에 spawn 메소드를 활용하게 되었습니다.<br>
 spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 병렬 프로세싱 작업에도 적합할 거라 생각했습니다.
 
 코드에서 사용한 `child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**되기 때문에<br>
-`child_process.spawn({ffmpeg path}, [ffmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.[[code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/extractBmp.js#L19)]
+`child_process.spawn({FFmpeg path}, [FFmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.[[code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/extractBmp.js#L19)]
 
 <br>
 </p>
@@ -173,7 +173,8 @@ GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면'
 GIF 파일은 `Image Frame Data` 에 **LZW 압축 알고리즘**이 적용되어 있습니다.
 
 GIF 파일의 **Image Frame을** 구성하기위해 Bitmap File에서 사용하는 데이터는 위 이미지와 같이 `Color Table` 과 `Image Data`입니다.<br>
-`Color Table`은 그대로 데이터를 삽입하지만 `Image Data`는 **LZW 데이터 압축**을 적용해 준 후에 삽입해야합니다. [[f. LZW 압축이란?](#f-lzw-압축이란)]
+`Color Table`은 그대로 데이터를 삽입하지만 `Image Data`는 **LZW 데이터 압축**을 적용해 준 후에 삽입해야합니다. 
+> [f. LZW 압축이란?](#f-lzw-압축이란)
 
 
 <br>
@@ -209,12 +210,12 @@ GIF 파일의 **Image Frame을** 구성하기위해 Bitmap File에서 사용하�
 </p>
 <p>
 
-### e. ffmpeg을 활용하여 Bitmap File을 추출해보자
+### e. FFmpeg을 활용하여 Bitmap File을 추출해보자
 
-ffmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다.
+FFmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용하여 Bitmap 파일을 얻을 수 있었습니다.
 
 ```
-ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
+FFmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
 (Bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
@@ -225,17 +226,13 @@ ffmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 
 ### f. LZW 압축이란?
 
-LZW 알고리즘은 Lempel-Ziv-Welch의 약자로 **무손실 압축 알고리즘**입니다.
-Lempel-Ziv가 만든 LZ78 알고리즘을 개선한 버전입니다.
+LZW 알고리즘은 Lempel-Ziv-Welch의 약자로 **무손실 압축 알고리즘**입니다.<br>
+Lempel-Ziv가 만든 LZ78 알고리즘을 개선한 버전입니다.<br>
+LZW의 핵심 아이디어는 데이터 공간을 절약하기 위해 **반복되는 Data의 패턴을 만들어서 재사용**합니다.<br>
 
-LZW의 핵심 아이디어는 데이터 공간을 절약하기 위해 **반복되는 Data의 패턴을 만들어서 재사용**합니다.
-
-일반적으로 ASCII 코드는 각 문자를 7비트를 사용하고(0~127) 마지막 1비트를 checksum으로 활용합니다.
-LZW에서는 마지막 bit를 활용하여 0x80(128)부터 0xFF(255)까지의 숫자를 한 개의 문자 대신에 둘, 셋 또는 그 이상의 문자열을 표현하는데 사용합니다.
-
-하나의 문자로 구성된 문자열은 유니그램(unigram), 두 개 문자로 구성된 문자열을 바이그램(bigram)이라 하고, 세 개의 문자로 구성된 문자열을 트라이그램(trigram)이라고 합니다. 이보다 더 긴 문자열은 구성하는 문자의 수에 그램(gram)이라는 접미사를 붙여서 부르고, 일반적으로 n-gram이라고 합니다.
-
-그래서 0부터 127까지는 유니그램을 표현하는데 사용하고, 128부터 255까지는 유니그램이 아닌 1보다 큰 n-gram을 나타내는데 사용합니다.
+일반적으로 ASCII 코드는 각 문자를 7비트를 사용하고(0~127) 마지막 1비트를 checksum으로 활용합니다.<br>
+LZW에서는 마지막 bit를 활용하여 0x80(128)부터 0xFF(255)까지의 숫자를 한 개의 문자 대신에 둘, 셋 또는 그 이상의 문자열을 표현하는데 사용합니다.<br>
+하나의 문자로 구성된 문자열은 유니그램(unigram), 두 개 문자로 구성된 문자열을 바이그램(bigram)이라 하고, 세 개의 문자로 구성된 문자열을 트라이그램(trigram)이라고 합니다. 이보다 더 긴 문자열은 구성하는 문자의 수에 그램(gram)이라는 접미사를 붙여서 부르고, 일반적으로 n-gram이라고 합니다. <br>그래서 0부터 127까지는 유니그램을 표현하는데 사용하고, 128부터 255까지는 유니그램이 아닌 1보다 큰 n-gram을 나타내는데 사용합니다.
 
 이 추가적인 부분에 들어가는 것은 한 번 이상 나온 문자의 결합 (Combinations of symbols) 값이 들어가게 됩니다.
 
@@ -258,8 +255,8 @@ LZW에서는 마지막 bit를 활용하여 0x80(128)부터 0xFF(255)까지의 �
   15    output code for P
 ```
 
-위에 수도코드는 LZW 알고리즘에 의해 확장된 공간 안에 중복되는 문자의 합을 넣기 위해 테이블을 만드는 과정입니다..<br>
-P를 첫 번째 문자, C를 다음 문자로 선언하고 테이블에서 P + C 값이 있는지 확인합니다. 없으면 string table에 추가합니다..<br>
+위에 수도코드는 LZW 알고리즘에 의해 확장된 공간 안에 중복되는 문자의 합을 넣기 위해 테이블을 만드는 과정입니다.<br>
+P를 첫 번째 문자, C를 다음 문자로 선언하고 테이블에서 P + C 값이 있는지 확인합니다. 없으면 string table에 추가합니다.<br>
 P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자열의 끝까지 진행하여 테이블을 만들고 압축을 하게됩니다.<br>
 
 <br>
@@ -271,13 +268,13 @@ P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자
 scale - Bitmap의 메모리 저장, 이미지 처리 효율 특성으로 이미지 너비를 4배수로 처리 했습니다.
 
 ```
-ffmpeg -i {inputPath.mp4} -vf scale={width-px:height-px} {outputPath.bmp}
+FFmpeg -i {inputPath.mp4} -vf scale={width-px:height-px} {outputPath.bmp}
 ```
 
-flip/mirror - ffmpeg에서 Bitmap File을 추출하는 과정에서 flip/mirror 옵션을 추가하여 옵션을 적용한 이미지를 얻을 수 있게 했습니다.
+flip/mirror - FFmpeg에서 Bitmap File을 추출하는 과정에서 flip/mirror 옵션을 추가하여 옵션을 적용한 이미지를 얻을 수 있게 했습니다.
 
 ```
-ffmpeg -i {inputPath.mp4} -vf {vflip} {hflip} {outputPath.bmp}
+FFmpeg -i {inputPath.mp4} -vf {vflip} {hflip} {outputPath.bmp}
 ```
 
 delay - 이미지 삽입시 delay 다음 이미지로 전환 되는 지연시간으로 1/100초 단위로 세팅 됩니다.<br>
@@ -289,11 +286,11 @@ GIF의 delay option 은 반대로 빨리 전환되기 위해 값이 작아져야
 </p>
 <p>
 
-## 3. 너무나 많은걸 할 수 있는 ffmpeg
+## 3. 너무나 많은걸 할 수 있는 FFmpeg
 
 ### a. 문제: Video의 Raw Data는 Bitmap이 아니다.
 
-ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
+FFmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 YUV파일이 추출되게 됩니다.(yuv420)<br>
 추출한 yuv 파일을 `yuv viewer`앱을 통해서 정상 이미지를 확인한 후에 Bitmap 파일로 변환 하려고 하는 과정에서 옳은 방향인가에 대해서 고민하게 되었습니다.<br>
 예상을 벗어나는 Raw Data File의 엄청난 크기로 인해 다른 문제를 일으킬 가능성도 있어보였습니다.
 
@@ -305,11 +302,10 @@ ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 
 
 ### b. 구현방향 수정: 효율과 과정사이
 
-**h.264 -> yuv -> bitmap -> gif**로 이어지는 일련의 과정을 도전해 보고싶은 마음도 있었지만<br>
-목표인 GIF File을 빠르게 생성하는 것도 앱의 지향점이기 때문에 Video File에서 Bitmap Image를 추출하는 것으로 방향을 수정 했습니다.<br>
+**h.264 -> yuv -> bitmap -> gif**로 이어지는 일련의 과정을 도전해 보고싶은 마음도 있었지만 목표인 GIF File을 빠르게 생성하는 것도 앱의 지향점이기 때문에 Video File에서 Bitmap Image를 추출하는 것으로 방향을 수정 했습니다.<br>
 또한 포맷 변경과정에서의 예상보다 훨씬 많은 메모리를 사용하는 것도 과정을 줄이게 되는 이유중에 하나 이기도 했습니다.<br>
 
-조금 나중에 알게되었지만 ffmpeg을 사용하면 Video Format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
+조금 나중에 알게되었지만 FFmpeg을 사용하면 Video Format에서 곧바로 GIF Image로 변환도 가능합니다.<br>
 하지만 GIF File 구조를 직접 생성하는 과정에서 Frame Delay와 같은 개별적인 option 설정할 수 있기 때문에 장점도 있었습니다.
 
 <br>
@@ -319,7 +315,8 @@ ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 
 ## 4. React navtive CLI?
 
 일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다.<br>
-앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다. <br>Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. <br>긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. <br>따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
+앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다.
+Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. <br>긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. <br>따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
 
 <br>
 </p>
@@ -331,7 +328,7 @@ ffmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 
 
 react native vlc media player를 활용하여 모바일에 저장된 Video File을 재생하였고 무한반복 기능을 설정하여 GIF로 변경되었을 때의 느낌을 미리 느껴볼 수 있도록 했습니다.
 
-기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복 되도록 하였습니다.**  <br> [[Preview](#preview)] [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/components/GifInfo.js#L50) ]
+기본화면에는 앱의 제목이 표시되도록, **선택한 컨텐츠 정보가 `redux`에 담긴 후에는 VLC플레이어를 통하여 자동 재생, 무한 반복** 되도록 하였습니다.  <br> [[Preview](#preview)] [ [code](https://github.com/isinthesky/VideoToGIF_RN/blob/3993d1dd3a46a797a0d31d6a02842cf615b53ec5/src/components/GifInfo.js#L50) ]
 
 <br>
 </p>
@@ -404,7 +401,7 @@ https://youtu.be/5NZXGDLRR6s
 | ---- | --------------- |
 | [Node.js](https://nodejs.org/ko/) | - |
 | [Express](https://expressjs.com/ko/) | javascript로 구축할 수 있는 강력한 웹 server 플랫폼을 사용하였습니다. |
-| [ffmpeg](https://ffmpeg.org/) | 강력한 디코딩 기능을 제공하는 ffmpeg을 사용함으로서 대부분의 Video Format에서 Bitmap File을 추출하기 위해 사용했습니다. |
+| [FFmpeg](https://FFmpeg.org/) | 강력한 디코딩 기능을 제공하는 FFmpeg을 사용함으로서 대부분의 Video Format에서 Bitmap File을 추출하기 위해 사용했습니다. |
 | ESLint | - |
 
 <br>
@@ -419,11 +416,10 @@ https://youtu.be/5NZXGDLRR6s
 
 # Memoir
 
-ffmpeg을 통해 얻은 Bitmap File을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만<br>
-wikipedia의 Image foramt 문서를 통해 Bitmap File과 GIF File의 구조를 이해하고 GIF Header Data를 구성하고 Frame Image에 옵션을 설정하고 Image Data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
+FFmpeg을 통해 얻은 Bitmap File을 사용하여 GIF 파일을 생성하는 작업은 결과물을 너무나 간단해 보이지만 wikipedia의 Image foramt 문서를 통해 Bitmap File과 GIF File의 구조를 이해하고 GIF Header Data를 구성하고 Frame Image에 옵션을 설정하고 Image Data를 압축한 후에 GIF 파일에 삽입하는 일련의 과정들은 쉽지 않았습니다.
 
-어찌보면 메인 도전이였던 GIF File 생성은 standard format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
+어찌보면 메인 도전이였던 GIF File 생성은 Standard Format이라는 정답이 있기 때문에 프로젝트를 완성하는 과정에서 다양한 접근방식이나 재미있는 아이디어를 코드에 녹이기 힘든 부분이 답답하면서도 어려웠습니다.
 
-그럼에도 react native cli 환경에서 user 편의성을 고려한 option control들을 배치하고 모바일 앱에서 server와 데이터를 주고 받으며 생성된 GIF가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
+그럼에도 React Native Cli 환경에서 사용자 편의성을 고려한 Option Control들을 배치하고 모바일 앱에서 Server와 데이터를 주고 받으며 생성된 GIF가 모바일에서 로드되고 재생 됐을 때 매우 감격스러웠습니다.
 
-이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 data sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다.<br>화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
+이제는 낮은 화질과 낮은 압출 효율로 인해 GIF 사용을 지양하는 움직임도 있지만 Data Sheet를 보며 생성할 수 있는 재미있는 미디어 형식이지 않을까 생각합니다.<br>화려하고 역동적인 아이템도 많지만 data sheet와 hexadecimal, data position과 씨름하는 개발도 재미있다는 걸 느꼈습니다.
