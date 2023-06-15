@@ -1,4 +1,4 @@
-# 📸**LivePhotoToGIF_RN**
+# 📸**VideoToGIF_RN**
 
 ### 영상을 GIF파일로 변환하여 사람들과 공유할 수 있는 모바일 애플리케이션입니다.
 
@@ -14,7 +14,7 @@
 - [Challenges](#challenges)
   - [1. 비디오에서 이미지 추출은 어떻게 해야할까?](#1-비디오에서-이미지-추출은-어떻게-해야할까)
     - [a. FFmpeg vs OpenCV](#a-ffmpeg-vs-opencv)
-    - [b. npm 라이브러리가 아닌 FFmpeg을 node환경에서 어떻게 실행할 수 있을까?](#b-npm-라이브러리가-아닌-FFmpeg을-node환경에서-어떻게-실행할-수-있을까)
+    - [b. npm 라이브러리가 아닌 FFmpeg을 Nodejs환경에서 어떻게 실행할 수 있을까?](#b-npm-라이브러리가-아닌-FFmpeg을-nodejs환경에서-어떻게-실행할-수-있을까)
   - [2. 이미지파일을 어떻게 움직이는 GIF 파일로 만들 수 있을까?](#2-이미지파일을-어떻게-움직이는-gif-파일로-만들-수-있을까)
     - [a. GIF의 구조를 먼저 살펴보자.](#a-gif의-구조를-먼저-살펴보자)
     - [b. GIF File 구조에 Image Frame를 쌓는다면?](#b-gif-file-구조에-image-frame를-쌓는다면)
@@ -103,7 +103,7 @@ OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이�
 </p>
 <p>
 
-### b. npm 라이브러리가 아닌 FFmpeg을 node환경에서 어떻게 실행할 수 있을까?
+### b. npm 라이브러리가 아닌 FFmpeg을 Nodejs환경에서 어떻게 실행할 수 있을까?
 <br>
 
 **b.1 Nodejs 환경에서 외부파일을 실행해주는 모듈**
@@ -111,14 +111,14 @@ OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이�
 
 | 구분 | [child_process](https://nodejs.org/dist/latest-v20.x/docs/api/child_process.html)          | [ShellJS](https://www.npmjs.com/package/shelljs)           |
 | ---- | --------------- | ---------------- |
-| 사용방법 | Node.js의 기본 내장 모듈  | npm 모듈 설치   |
+| 사용방법 | Nodejs의 기본 내장 모듈  | npm 모듈 설치   |
 | 장점 | exec, spawn 등 실행방법의 다양한 메소드 제공 | Windows/Linux/OS X, 다양한 OS 환경을 지원한다. |
 | FFmpeg 사용에 적합한가? | 실행과 argument 삽입이 가능 | 실행과 argument 삽입이 가능 |
 
 
 Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.<br>
 Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 사용했습니다.<br>
-중요한 FFmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 FFmpeg을 실행하는 데에는 문제가 없었습니다.
+중요한 FFmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument와 함께 실행이 가능해서 FFmpeg을 실행하는 데에는 문제가 없었습니다.
 
 <br>
 
@@ -190,10 +190,10 @@ GIF 파일의 **Image Frame을** 구성하기위해 Bitmap File에서 사용하�
 </p>
 <p>
 
-### d. 8bit Bitmapitmap?
+### d. 8bit Bitmap?
 
 우리가 웹에서 사용하는 Bitmap File의 포맷은 24 또는 32bit Bitmap 입니다.<br>
-조금은 생소한 8bit Bitmap은 뿌옇게 변해버리는 GIF 이미지의 원인입니다.
+조금은 생소한 8bit Bitmap은 GIF 이미지 화질 저하의 원인입니다.
 
 앞의 숫자 bit는 Bitmap 이미지 파일이 사용하는 Pixel의 색상의 갯수입니다. 따라서 8bit Bitmap File은 256개의 color를 가지고 이미지를 표현하게 됩니다.<br>
 8bit Bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 Bitmap을 표현하게 됩니다.
@@ -216,7 +216,7 @@ FFmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용
 FFmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
-(Bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
+(Bitmap Image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
 
 <br>
 </p>
@@ -261,7 +261,7 @@ P + C의 테이블 값이 없을 때까지 계속 진행한다. 이렇듯 문자
 </p>
 <p>
 
-### g. GIF option 적용
+### g. GIF Option 적용
 
 scale - Bitmap의 메모리 저장, 이미지 처리 효율 특성으로 이미지 너비를 4배수로 처리 했습니다.
 
