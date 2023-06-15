@@ -89,9 +89,8 @@
 
 ffmepg 라이브러리의 사용 경험이 있었지만 OpenCV로도 Video에서 이미지 추출이 가능하다는 정보를 얻었습니다.<br>
 거의 모든 미디어의 encoding decoding을 지원하고 범용적으로 쓰이는 FFmpeg은 OpenCV도 활용하고 있다는 정보도 얻을 수 있었습니다.<br>
-OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고<br>
-FFmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만<br>
-쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 FFmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 FFmpeg을 직접 사용했습니다.
+
+OpenCV를 사용하면 Image processing에 대한 장점 있어, 다양한 이미지 효과를 적용하기에 좋다고 생각했고 FFmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어 OpenCV를 사용하는게 나아 보였지만 쉽고 간단한 동작으로 GIF로 빠르게 변환하는 저의 프로젝트에서는 FFmpeg을 선택하는게 더 가볍고 간편하게 사용할 수 있다고 생각하여 FFmpeg을 직접 사용했습니다.
 
 | 구분 | FFmpeg          | OpenCV           |
 | ---- | --------------- | ---------------- |
@@ -117,7 +116,7 @@ FFmpeg은 영상에 대한 encoding, decoding, filter 적용에 이점이 있어
 | FFmpeg 사용에 적합한가? | 실행과 argument 삽입이 가능 | 실행과 argument 삽입이 가능 |
 
 
-Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.
+Nodejs 환경에서는 대표적으로 두가지 방법을 사용할 수 있었습니다.<br>
 Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 사용했습니다.<br>
 중요한 FFmpeg을 실행하고 원하는 결과를 얻어 내야 하는데 두 방법 argument를 추가하여 실행이 가능해서 FFmpeg을 실행하는 데에는 문제가 없었습니다.
 
@@ -134,8 +133,7 @@ Nodejs의 기본 내장 모듈사용이라는 편의성으로 child_process를 �
 FFmpeg의 사용은 Video File을 decoding하게 되고 많은 메모리를 사용하기 때문에 spawn 메소드를 활용하게 되었습니다.<br>
 spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 병렬 프로세싱 작업에도 적합할 거라 생각했습니다.
 
-코드에서 사용한 `child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**되기 때문에<br>
-`child_process.spawn({FFmpeg path}, [FFmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.[[code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/extractBmp.js#L19)]
+코드에서 사용한 `child_process.spawn` 메서드는 Node.js 이벤트 루프를 차단하지 않고 **자식 프로세스를 비동기적으로 실행**되기 때문에 `child_process.spawn({FFmpeg path}, [FFmpeg options])` 실행 후 `Callback` 함수를 `Promise`로 감싸 코드의 흐름을 제어했습니다.[[code](https://github.com/isinthesky/VideoToGIF_Sever/blob/37d513f29828a4318038c3615147b1ad148cc5e5/src/lib/extractBmp.js#L19)]
 
 <br>
 </p>
@@ -149,7 +147,7 @@ spawn매서드는 새 서브 프로세서 생성하여 실행하기 때문에 �
 
 ### a. GIF의 구조를 먼저 살펴보자.
 
- 큰 틀에서 보면 앞쪽 Image Header 부분과 반복되는 Image Frame 부분으로 나눌 수 있습니다.
+큰 틀에서 보면 앞쪽 Image Header 부분과 반복되는 Image Frame 부분으로 나눌 수 있습니다.
 
 ![GIF_File_Stream](https://github.com/isinthesky/LivePhotoToGIF_RN/assets/52302090/db9544e7-c8c7-4fb5-874f-d1140eaa4976)<br>
 
@@ -165,8 +163,8 @@ a 단락의 GIF구조를 바탕으로 실제 데이터를 쌓는다면 이런 �
 
 **b-1. GIF Header에 필요한 정보**
 
-GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면') 정보와 GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 정보,<br>
-그뒤로 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자를 넣어줍니다.<br>화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략했습니다.
+GIF Info Header영역에 고정된 크기의 그래픽 영역('논리적 화면') 정보와 GIF 파일은 버전을 나타내는 고정 길이 헤더("GIF87a" 또는 "GIF89a")로 정보, 그뒤로 논리 화면의 픽셀 크기 및 기타 특성을 나타내는 고정 길이 논리 화면 설명자를 넣어줍니다.<br>
+화면 설명자는 또한 글로벌 컬러 테이블(GCT)의 존재 여부와 크기를 지정할 수 있으며, 저는 각 이미지 프레임에 Local Color Table을 사용하게 하였고 글로벌 컬러 테이블(GCT)는 생략했습니다.
 
 **b-2. Image Frame 삽입에 필요한 정보**
 
@@ -198,7 +196,7 @@ GIF 파일의 **Image Frame을** 구성하기위해 Bitmap File에서 사용하�
 조금은 생소한 8bit Bitmap은 뿌옇게 변해버리는 GIF 이미지의 원인입니다.
 
 앞의 숫자 bit는 Bitmap 이미지 파일이 사용하는 Pixel의 색상의 갯수입니다. 따라서 8bit Bitmap File은 256개의 color를 가지고 이미지를 표현하게 됩니다.<br>
-8bit Bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 Bitmap을 표현하게 됩니다.<br>
+8bit Bitmap은 256개 RGB Color의 color table을 소유하고 실제 image data array에서 해당 color의 table 위치값으로 Bitmap을 표현하게 됩니다.
 
 
 | Bitmap Color Bit  | Pixel 표현 형식    | 비고 |
@@ -218,7 +216,7 @@ FFmpeg에 `pixel_format` 명령에 8Bit Bitmap 추출 옵션인 `bgr8`를 적용
 FFmpeg -i {inputPath.mp4} -pix_fmt {bgr8} {outputPath.bmp}
 ```
 
-(Bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)<br>
+(Bitmap image data 배열은 **windows의 little endian 형식**으로 배열로 파일을 가져왔을 때 bgr 형식으로 읽어오게 됩니다.)
 
 <br>
 </p>
@@ -315,7 +313,8 @@ FFmpeg을 활용하여 Video의 Raw Data를 추출한다면 Bitmap이 아니라 
 ## 4. React navtive CLI?
 
 일상생활에서 매일 모바일을 사용하지만 그동안 앱 개발에 대한 경험이 없었습니다.<br>
-앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다.
+앱을 개발하는 현업에서는 React-Native Expo가 아닌 CLI로 작업을 한다는 얘기를 이따금 들었었고, Expo와 CLI환경의 장단점을 찾아보면서 CLI로 도전해보고 싶다는 생각이 들었습니다.<br>
+
 Expo를 사용하면 Expo SDK에서 지원해주는 기능이 많고 간단하게 사용할 수 있기 때문에 빠르고 쉽게 개발할 수 있습니다. 하지만 Native Module과 연결하여 커스터마이징 할 수 없다는 단점과, 빌드할때 유료를 사용하지 않거나, 자체 빌드 서버가 없다면 빌드 큐에서 순서를 기다려야 한다는 단점이 존재합니다. <br>긴 빌드 시간과 Expo가 자체적으로 제공하는 기능이 많기 때문에 큰 용량 또한 단점이 되어 현업에서는 사용하지 않는다고 합니다. <br>따라서 Expo가 아닌 CLI로 개발을 진행하면서 직접 환경 설정, 빌드 등 여러 환경에 대한 경험을 해보고 네이티브 기능까지 확장할 수있는 가능성을 염두해 두고 프로젝트를 기획하게 되었습니다.
 
 <br>
